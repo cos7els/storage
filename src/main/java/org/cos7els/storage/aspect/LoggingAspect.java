@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class LoggingAspect {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Around("execution(* org.cos7els.storage.*.*.*(..))")
+    @Around("execution(* org.cos7els.storage.*.*.*(..)) && !@annotation(org.cos7els.storage.aspect.NoLogging)")
     public Object logsAroundMethodsExecution(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         String methodName = joinPoint.getSignature().toString();

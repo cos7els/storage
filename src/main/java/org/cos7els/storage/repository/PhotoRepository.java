@@ -1,11 +1,7 @@
 package org.cos7els.storage.repository;
 
 import org.cos7els.storage.model.Photo;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PhotoRepository extends CrudRepository<Photo, Long> {
-    @Query
-    Iterable<Photo> findAllByUserIdIsOrderById(@Param("userId") long userId);
+public interface PhotoRepository extends JpaRepository<Photo, Long> {
 }

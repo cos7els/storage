@@ -1,37 +1,41 @@
 package org.cos7els.storage.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "photo", schema = "public")
+@Table(name = "photos", schema = "public")
 public class Photo {
     @Id
-    @Column(name = "photo_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "user_id")
-    private long userId;
+    @JsonBackReference(value = "photoOwner")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "content_type")
     private String contentType;
     @Column(name = "size")
     private double size;
-    @Column(name = "data")
-    @JsonIgnore
-    private byte[] data;
+    @Column(name = "path")
+    private String path;
+    @JsonBackReference(value = "albumsOfPhoto")
+    @ManyToMany(mappedBy = "photos", fetch = FetchType.EAGER)
+    private List<Album> albums;
 }

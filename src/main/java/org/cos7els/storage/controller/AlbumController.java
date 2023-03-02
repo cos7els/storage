@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,31 +27,43 @@ public class AlbumController {
         this.albumService = albumService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Album> getAlbum(@PathVariable long id) {
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Album> getAlbum(@PathVariable Long id) {
         Optional<Album> album = albumService.getAlbum(id);
         return album.isPresent() ?
                 new ResponseEntity<>(album.get(), HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping
-    public ResponseEntity<Iterable<Album>> getAlbums() {
-        return new ResponseEntity<>(albumService.getAlbums(), HttpStatus.OK);
+    @GetMapping("/get/all")
+    public ResponseEntity<List<Album>> getAllAlbums() {
+        List<Album> albums = albumService.getAllAlbums();
+        return albums.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(albums, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Album> createAlbum(@RequestBody Album album) {
-        return new ResponseEntity<>(albumService.createAlbum(album), HttpStatus.CREATED);
+        return new ResponseEntity<>(albumService.saveAlbum(album), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteAlbum(@PathVariable long id) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Album> updateAlbum(@PathVariable Long id, @RequestBody Album album) {
+        return albumService.isAlbumExists(id) ?
+                new ResponseEntity<>(albumService.saveAlbum(album), HttpStatus.OK) :
+                new ResponseEntity<>(albumService.saveAlbum(album), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteAlbum(@PathVariable Long id) {
         albumService.deleteAlbum(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
-    public void deleteUsers() {
-        albumService.deleteAlbums();
+    @DeleteMapping("/delete/all")
+    public ResponseEntity<HttpStatus> deleteAllAlbums() {
+        albumService.deleteAllAlbums();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

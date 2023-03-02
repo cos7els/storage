@@ -1,46 +1,20 @@
 package org.cos7els.storage.service;
 
 import org.cos7els.storage.model.Photo;
-import org.cos7els.storage.model.User;
-import org.cos7els.storage.repository.PhotoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
-@Service
-public class PhotoService {
-    private final PhotoRepository photoRepository;
+public interface PhotoService {
+    Optional<Photo> getPhoto(Long id);
 
-    @Autowired
-    public PhotoService(PhotoRepository photoRepository) {
-        this.photoRepository = photoRepository;
-    }
+    List<Photo> getAllPhotos();
 
-    public Optional<Photo> getPhoto(long id) {
-        return photoRepository.findById(id);
-    }
+    Photo savePhoto(Photo photo);
 
-    public Iterable<Photo> getPhotos() {
-        return photoRepository.findAll();
-    }
+    void deletePhoto(Long id);
 
-    public Photo createPhoto(User user, String fileName, String contentType, long size, byte[] data) {
-            Photo photo = new Photo();
-            photo.setUserId(user.getId());
-            photo.setFileName(fileName);
-            photo.setContentType(contentType);
-            double usedSpace = (double) size / 1000000;
-            photo.setSize(usedSpace);
-            photo.setData(data);
-            return photoRepository.save(photo);
-    }
+    void deleteAllPhotos();
 
-    public void deletePhoto(long id) {
-        photoRepository.deleteById(id);
-    }
-
-    public void deletePhotos() {
-        photoRepository.deleteAll();
-    }
+    boolean isPhotoExists(Long id);
 }

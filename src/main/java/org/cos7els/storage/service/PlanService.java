@@ -1,38 +1,20 @@
 package org.cos7els.storage.service;
 
 import org.cos7els.storage.model.Plan;
-import org.cos7els.storage.repository.PlanRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
-@Service
-public class PlanService {
-    private final PlanRepository planRepository;
+public interface PlanService {
+    Optional<Plan> getPlan(Long id);
 
-    @Autowired
-    public PlanService(PlanRepository planRepository) {
-        this.planRepository = planRepository;
-    }
+    List<Plan> getAllPlans();
 
-    public Optional<Plan> getPlan(long id) {
-        return planRepository.findById(id);
-    }
+    Plan savePlan(Plan plan);
 
-    public Iterable<Plan> getPlans() {
-        return planRepository.findAll();
-    }
+    void deletePlan(Long id);
 
-    public Plan createPlan(Plan plan) {
-        return planRepository.save(plan);
-    }
+    void deleteAllPlans();
 
-    public void deletePlan(long id) {
-        planRepository.deleteById(id);
-    }
-
-    public void deletePlans() {
-        planRepository.deleteAll();
-    }
+    boolean isPlanExists(Long id);
 }

@@ -1,38 +1,20 @@
 package org.cos7els.storage.service;
 
 import org.cos7els.storage.model.Album;
-import org.cos7els.storage.repository.AlbumRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
-@Service
-public class AlbumService {
-    private final AlbumRepository albumRepository;
+public interface AlbumService {
+    Optional<Album> getAlbum(Long id);
 
-    @Autowired
-    public AlbumService(AlbumRepository albumRepository) {
-        this.albumRepository = albumRepository;
-    }
+    List<Album> getAllAlbums();
 
-    public Optional<Album> getAlbum(long id) {
-        return albumRepository.findById(id);
-    }
+    Album saveAlbum(Album album);
 
-    public Iterable<Album> getAlbums() {
-        return albumRepository.findAll();
-    }
+    void deleteAlbum(Long id);
 
-    public Album createAlbum(Album album) {
-        return albumRepository.save(album);
-    }
+    void deleteAllAlbums();
 
-    public void deleteAlbum(long id) {
-        albumRepository.deleteById(id);
-    }
-
-    public void deleteAlbums() {
-        albumRepository.deleteAll();
-    }
+    boolean isAlbumExists(Long id);
 }
