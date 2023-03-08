@@ -2,6 +2,8 @@ package org.cos7els.storage.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,14 +18,16 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Data
+@ToString(exclude = {"user", "albums"})
+@EqualsAndHashCode(exclude = {"user", "albums"})
 @Entity
 @Table(name = "photos", schema = "public")
 public class Photo {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @JsonBackReference(value = "photoOwner")
+    private Long id;
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -35,7 +39,7 @@ public class Photo {
     private double size;
     @Column(name = "path")
     private String path;
-    @JsonBackReference(value = "albumsOfPhoto")
+    @JsonBackReference
     @ManyToMany(mappedBy = "photos", fetch = FetchType.EAGER)
     private List<Album> albums;
 }

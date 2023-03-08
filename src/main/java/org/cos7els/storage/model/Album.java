@@ -3,6 +3,8 @@ package org.cos7els.storage.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +21,8 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Data
+@ToString(exclude = {"user", "photos"})
+@EqualsAndHashCode(exclude = {"user", "photos"})
 @Entity
 @Table(name = "albums", schema = "public")
 public class Album {
@@ -26,14 +30,14 @@ public class Album {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "albums_seq")
     @SequenceGenerator(name = "albums_seq", sequenceName = "albums_id_seq", allocationSize = 1)
-    private long id;
-    @JsonBackReference(value = "albumOwner")
+    private Long id;
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "title")
     private String title;
-    @JsonManagedReference(value = "photosOfAlbum")
+    @JsonManagedReference
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "albums_photos",
             joinColumns = @JoinColumn(name = "album_id", referencedColumnName = "id"),

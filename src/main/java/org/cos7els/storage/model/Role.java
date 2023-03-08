@@ -2,6 +2,8 @@ package org.cos7els.storage.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -19,6 +21,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@ToString(exclude = "users")
+@EqualsAndHashCode(exclude = "users")
 @Entity
 @Table(name = "roles", schema = "public")
 public class Role {
@@ -36,7 +40,9 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-    @JsonBackReference(value = "usersOfRole")
+    @JsonBackReference
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private List<User> users;
+
+
 }

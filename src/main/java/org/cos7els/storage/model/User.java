@@ -2,7 +2,10 @@ package org.cos7els.storage.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +22,8 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Data
+@ToString(exclude = {"photos", "albums", "plan", "roles"})
+@EqualsAndHashCode(exclude = {"photos", "albums", "plan", "roles"})
 @Entity
 @Table(name = "users", schema = "public")
 public class User {
@@ -26,7 +31,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
     @SequenceGenerator(name = "users_seq", sequenceName = "users_id_seq", allocationSize = 1)
     private Long id;
-    @JsonManagedReference(value = "usersPlan")
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "plan_id")
     private Plan plan;
@@ -36,16 +41,16 @@ public class User {
     private String password;
     @Column(name = "email")
     private String email;
-    @JsonManagedReference(value = "usersRoles")
-    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
-    @JsonManagedReference(value = "usersPhotos")
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Photo> photos;
-    @JsonManagedReference(value = "usersAlbums")
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Album> albums;
 }
