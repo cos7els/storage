@@ -16,18 +16,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@ToString(exclude = "users")
-@EqualsAndHashCode(exclude = "users")
 @Entity
 @Table(name = "roles", schema = "public")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_seq")
+    @SequenceGenerator(name = "roles_seq", sequenceName = "roles_id_seq", allocationSize = 1)
     private Long id;
     @Column(name = "name")
     private String name;
@@ -40,9 +41,4 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-    @JsonBackReference
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-    private List<User> users;
-
-
 }

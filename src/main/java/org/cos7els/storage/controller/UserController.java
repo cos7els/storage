@@ -1,10 +1,12 @@
 package org.cos7els.storage.controller;
 
 import org.cos7els.storage.model.User;
+import org.cos7els.storage.security.UserDetailsImpl;
 import org.cos7els.storage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,14 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<User> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Optional<User> user = userService.getUser(userDetails.getId());
+        return user.isPresent() ?
+                new ResponseEntity<>(user.get(), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/get/{id}")

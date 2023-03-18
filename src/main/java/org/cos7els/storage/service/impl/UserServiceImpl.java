@@ -18,6 +18,10 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    public Optional<User> getUserByUsername(String username) {
+        return Optional.of(userRepository.getUserByUsername(username));
+    }
+
     public Optional<User> getUser(Long id) {
         return userRepository.findById(id);
     }

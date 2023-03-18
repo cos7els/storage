@@ -1,20 +1,22 @@
 package org.cos7els.storage.service;
 
 import org.cos7els.storage.model.Photo;
+import org.cos7els.storage.model.User;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 public interface PhotoService {
-    Optional<Photo> getPhoto(Long id);
 
-    List<Photo> getAllPhotos();
+    Optional<Photo> getPhoto(Long photoId, Long userId);
 
-    Photo savePhoto(Photo photo);
+    List<Photo> getAllPhotos(Long userId);
 
-    void deletePhoto(Long id);
+    Photo uploadPhoto(MultipartFile file, Long userId) throws IOException;
 
-    void deleteAllPhotos();
+    Optional<Photo> deletePhoto(Long photoId, Long userId);
 
-    boolean isPhotoExists(Long id);
+    List<Photo> deleteAllPhotos(Long userId);
 }
