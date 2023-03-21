@@ -1,5 +1,6 @@
 package org.cos7els.storage.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.model.Photo;
 import org.cos7els.storage.model.User;
 import org.cos7els.storage.repository.PhotoRepository;
@@ -18,16 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PhotoServiceImpl implements PhotoService {
     private final Path ROOT = Paths.get("data");
     private final PhotoRepository photoRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public PhotoServiceImpl(PhotoRepository photoRepository, UserRepository userRepository) {
-        this.photoRepository = photoRepository;
-        this.userRepository = userRepository;
-    }
 
     public Optional<Photo> getPhoto(Long photoId, Long userId) {
         return photoRepository.findPhotoByIdAndUserId(photoId, userId);

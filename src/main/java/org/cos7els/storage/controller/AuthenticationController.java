@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/authentication")
 @RequiredArgsConstructor
@@ -21,10 +23,9 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest authenticationRequest
     ) {
-        AuthenticationResponse authenticationResponse = authenticationService.authenticate(authenticationRequest);
-        System.out.println(authenticationResponse);
-        return authenticationResponse != null ?
-                new ResponseEntity<>(authenticationResponse, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.CONFLICT);
+        Optional<AuthenticationResponse> authenticationResponse = authenticationService.authenticate(authenticationRequest);
+        return authenticationResponse.isPresent() ?
+                new ResponseEntity<>(authenticationResponse.get(), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }

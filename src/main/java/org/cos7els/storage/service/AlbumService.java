@@ -1,20 +1,21 @@
 package org.cos7els.storage.service;
 
 import org.cos7els.storage.model.Album;
+import org.cos7els.storage.model.request.CreateAlbumRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AlbumService {
-    Optional<Album> getAlbum(Long id);
+    Optional<Album> getAlbum(Long albumId, Long userId);
 
-    List<Album> getAllAlbums();
+    List<Album> getAllAlbums(Long userId);
 
-    Album saveAlbum(Album album);
+    Album saveAlbum(CreateAlbumRequest request, Long userId);
 
-    void deleteAlbum(Long id);
+    void deleteAlbum(Long albumId, Long userId);
 
-    void deleteAllAlbums();
+    void deleteAllAlbums(Long userId);
 
     boolean isAlbumExists(Long id);
 }
