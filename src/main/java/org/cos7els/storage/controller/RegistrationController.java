@@ -1,5 +1,7 @@
 package org.cos7els.storage.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.cos7els.storage.exception.CustomException;
 import org.cos7els.storage.model.User;
 import org.cos7els.storage.model.request.AuthenticationRequest;
 import org.cos7els.storage.model.request.RegistrationRequest;
@@ -14,22 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+import static org.cos7els.storage.util.ExceptionMessage.REGISTER_EXCEPTION;
+
 @RestController
+@RequiredArgsConstructor
 public class RegistrationController {
     private final RegistrationService registrationService;
 
-    @Autowired
-    public RegistrationController(RegistrationService registrationService) {
-        this.registrationService = registrationService;
-    }
-
-    @PostMapping("/register")
+    @PostMapping("/registration")
     public ResponseEntity<User> register(
-            @RequestBody RegistrationRequest registrationRequest
+            @RequestBody RegistrationRequest request
     ) {
-        Optional<User> user = registrationService.registerUser(registrationRequest);
-        return user.isPresent() ?
-                new ResponseEntity<>(user.get(), HttpStatus.CREATED) :
-                new ResponseEntity<>(HttpStatus.CONFLICT);
+        User user = registrationService.registerUser(request)
+                .orElseThrow(() -> new CustomException(REGISTER_EXCEPTION));
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 }

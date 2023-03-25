@@ -23,18 +23,6 @@
                                  referencedTableName="photos"
                                  referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="albums_users"
-                                 baseColumnNames="album_id"
-                                 constraintName="albums_users_albums_id_fk"
-                                 referencedTableName="albums"
-                                 referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="albums_users"
-                                 baseColumnNames="user_id"
-                                 constraintName="albums_photos_users_id_fk"
-                                 referencedTableName="users"
-                                 referencedColumnNames="id"/>
-
         <addForeignKeyConstraint baseTableName="photos"
                                  baseColumnNames="user_id"
                                  constraintName="photos_users_id_fk"
@@ -42,9 +30,9 @@
                                  referencedColumnNames="id"/>
 
         <addForeignKeyConstraint baseTableName="users"
-                                 baseColumnNames="plan_id"
-                                 constraintName="users_plans_id_fk"
-                                 referencedTableName="plans"
+                                 baseColumnNames="id"
+                                 constraintName="users_subscriptions_id_fk"
+                                 referencedTableName="subscriptions"
                                  referencedColumnNames="id"/>
 
         <addForeignKeyConstraint baseTableName="users_roles"
@@ -58,6 +46,13 @@
                                  constraintName="users_roles_roles_id_fk"
                                  referencedTableName="roles"
                                  referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="subscriptions"
+                                 baseColumnNames="plan_id"
+                                 constraintName="subscriptions_plans_id_fk"
+                                 referencedTableName="plans"
+                                 referencedColumnNames="id"/>
+
     </changeSet>
 
 </databaseChangeLog>

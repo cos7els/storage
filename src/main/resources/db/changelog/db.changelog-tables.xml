@@ -7,10 +7,10 @@
     <changeSet id="1.0.0" author="cos7els">
         <createSequence sequenceName="albums_id_seq"/>
         <createSequence sequenceName="albums_photos_id_seq"/>
-        <createSequence sequenceName="albums_users_id_seq"/>
         <createSequence sequenceName="photos_id_seq"/>
         <createSequence sequenceName="plans_id_seq"/>
         <createSequence sequenceName="roles_id_seq"/>
+        <createSequence sequenceName="subscriptions_id_seq"/>
         <createSequence sequenceName="users_id_seq"/>
         <createSequence sequenceName="users_roles_id_seq"/>
     </changeSet>
@@ -44,20 +44,6 @@
     </changeSet>
 
     <changeSet id="1.0.3" author="cos7els">
-        <createTable tableName="albums_users">
-            <column name="id" type="bigint" defaultValueSequenceNext="albums_users_id_seq">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="album_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="1.0.4" author="cos7els">
         <createTable tableName="photos">
             <column name="id" type="bigint" defaultValueSequenceNext="photos_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
@@ -80,7 +66,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.5" author="cos7els">
+    <changeSet id="1.0.4" author="cos7els">
         <createTable tableName="plans">
             <column name="id" type="bigint" defaultValueSequenceNext="plans_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
@@ -88,19 +74,22 @@
             <column name="title" type="varchar">
                 <constraints nullable="false"/>
             </column>
-            <column name="available_space" type="double">
+            <column name="available_space" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="price_per_month" type="double">
+            <column name="monthly_price" type="double">
                 <constraints nullable="false"/>
             </column>
-            <column name="price_per_year" type="double">
+            <column name="yearly_price" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="boolean" defaultValue="true">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.6" author="cos7els">
+    <changeSet id="1.0.5" author="cos7els">
         <createTable tableName="roles">
             <column name="id" type="bigint" defaultValueSequenceNext="roles_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
@@ -108,13 +97,24 @@
             <column name="name" type="varchar">
                 <constraints unique="true" nullable="false"/>
             </column>
-            <column name="created" type="date" defaultValueDate="now()">
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.6" author="cos7els">
+        <createTable tableName="subscriptions">
+            <column name="id" type="bigint" defaultValueSequenceNext="subscriptions_id_seq">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="plan_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated" type="date" defaultValueDate="now()">
+            <column name="issued_date" type="date" defaultValueDate="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="varchar" defaultValue="ACTIVE">
+            <column name="expired_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="boolean" defaultValue="true">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -125,9 +125,6 @@
             <column name="id" type="bigint" defaultValueSequenceNext="users_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="plan_id" type="bigint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
             <column name="username" type="varchar">
                 <constraints unique="true" nullable="false"/>
             </column>
@@ -137,16 +134,7 @@
             <column name="email" type="varchar">
                 <constraints unique="true" nullable="false"/>
             </column>
-            <column name="used_space" type="double" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created" type="date" defaultValueDate="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated" type="date" defaultValueDate="now()">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="varchar" defaultValue="ACTIVE">
+            <column name="used_space" type="bigint" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
         </createTable>

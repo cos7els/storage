@@ -1,10 +1,14 @@
 package org.cos7els.storage.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,12 +21,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-@PropertySource("classpath:vars.properties")
+@PropertySource("classpath:variables.properties")
+@RequiredArgsConstructor
 public class JwtService {
     @Value("${jwt-secret-key}")
     private String JWT_SECRET_KEY;
     @Value("${token-life-time}")
     private Long TOKEN_LIFE_TIME;
+    private final UserDetailsServiceImpl userDetailsService;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -40,6 +46,15 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return userDetailsService.isUserExists(claims.getSubject());
+        } catch (ExpiredJwtException | MalformedJwtException | SignatureException e) {
+            return false;
+        }
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {

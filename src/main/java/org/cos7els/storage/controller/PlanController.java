@@ -1,10 +1,14 @@
 package org.cos7els.storage.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.model.Plan;
+import org.cos7els.storage.model.User;
+import org.cos7els.storage.security.UserDetailsImpl;
 import org.cos7els.storage.service.PlanService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.cos7els.storage.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,13 +22,17 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/plan")
+@RequiredArgsConstructor
 public class PlanController {
     private final PlanService planService;
+    private final UserService userService;
 
-    @Autowired
-    public PlanController(PlanService planService) {
-        this.planService = planService;
+    @GetMapping("/plan")
+    public ResponseEntity<Plan> getPlan(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Optional<User> user = userService.getUser(userDetails.getId());
+        return user.isPresent() ?
+                new ResponseEntity<>(user.get().getSubscription().getPlan(), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/get/{id}")
