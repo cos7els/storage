@@ -1,6 +1,5 @@
 package org.cos7els.storage.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -29,7 +28,6 @@ public class User {
     private Long id;
     @Column(name = "username")
     private String username;
-    @JsonIgnore
     @Column(name = "password")
     private String password;
     @Column(name = "email")
@@ -40,8 +38,8 @@ public class User {
     @PrimaryKeyJoinColumn
     private Subscription subscription;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-    @JoinTable(name = "users_roles",
+    @JoinTable(name = "users_authorities",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+            inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
+    private List<Authority> authorities;
 }

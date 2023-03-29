@@ -1,15 +1,15 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Photo;
+import org.cos7els.storage.model.response.PhotoResponse;
 import org.cos7els.storage.security.UserDetailsImpl;
 import org.cos7els.storage.service.PhotoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,34 +23,42 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static org.cos7els.storage.util.ExceptionMessage.PHOTOS_NOT_FOUND;
+import static org.cos7els.storage.util.ExceptionMessage.PHOTO_NOT_FOUND;
+
 @RestController
-@RequestMapping("/photo")
 @RequiredArgsConstructor
 public class PhotoController {
     private final PhotoService photoService;
 
     @GetMapping("/photos")
-    public ResponseEntity<List<Photo>> getAllPhotos(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+    public ResponseEntity<List<PhotoResponse>> getAllPhotos(
+            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
     ) {
-        List<Photo> photos = photoService.getAllPhotos(userDetails.getId());
-        return photos.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(photos, HttpStatus.OK);
+        List<Photo> photos = photoService.getAllPhotos(userDetails.getId())
+                .orElseThrow(() -> new NotFoundException(PHOTOS_NOT_FOUND));
+        return new ResponseEntity<>(
+                photoService.photosToResponses(photos), HttpStatus.OK
+        );
     }
 
     @GetMapping("/photo/{id}")
-    public ResponseEntity<Photo> getPhoto(@PathVariable Long id,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Optional<Photo> photo = photoService.getPhoto(id, userDetails.getId());
-        return photo.isPresent() ?
-                new ResponseEntity<>(photo.get(), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<PhotoResponse> getPhoto(
+            @PathVariable Long id,
+            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
+    ) {
+        Photo photo = photoService.getPhoto(id, userDetails.getId())
+                .orElseThrow(() -> new NotFoundException(PHOTO_NOT_FOUND));
+        return new ResponseEntity<>(
+                photoService.photoToResponse(photo), HttpStatus.OK
+        );
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Photo> uploadPhoto(@RequestPart("data") MultipartFile file,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseEntity<Photo> uploadPhoto(
+            @RequestPart("data") MultipartFile file,
+            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
+    ) throws IOException {
         Photo photo = photoService.uploadPhoto(file, userDetails.getId());
         return new ResponseEntity<>(photo, HttpStatus.CREATED);
     }
@@ -81,7 +89,7 @@ public class PhotoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Photo> deletePhoto(@PathVariable Long id,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                             @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails) {
         Optional<Photo> photo = photoService.deletePhoto(id, userDetails.getId());
         return photo.isPresent() ?
                 new ResponseEntity<>(photo.get(), HttpStatus.OK) :
@@ -89,7 +97,7 @@ public class PhotoController {
     }
 
     @DeleteMapping
-    public ResponseEntity<List<Photo>> deleteAllPhotos(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<List<Photo>> deleteAllPhotos(@AuthenticationPrincipal @NotNull UserDetailsImpl userDetails) {
         List<Photo> photos = photoService.deleteAllPhotos(userDetails.getId());
         return photos.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :

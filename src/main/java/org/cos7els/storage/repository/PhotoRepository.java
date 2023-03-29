@@ -1,9 +1,11 @@
 package org.cos7els.storage.repository;
 
 import org.cos7els.storage.model.Photo;
+import org.cos7els.storage.model.response.PhotoResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +14,8 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     Optional<Photo> findPhotoByIdAndUserId(Long photoId, Long userId);
 
     List<Photo> findPhotosByUserId(Long id);
+
+    Optional<List<Photo>> findPhotosByUserIdOrderById(Long id);
 
     void deletePhotoByIdAndUserId(Long photoId, Long userId);
 

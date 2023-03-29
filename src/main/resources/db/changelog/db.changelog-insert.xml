@@ -37,11 +37,14 @@
             <column name="issued_date" value="now()"/>
             <column name="expired_date" value="2050-01-01"/>
         </insert>
-        <insert tableName="roles">
-            <column name="name" value="USER"/>
+        <insert tableName="authorities">
+            <column name="name" value="ROLE_ADMIN"/>
         </insert>
-        <insert tableName="roles">
-            <column name="name" value="ADMIN"/>
+        <insert tableName="authorities">
+            <column name="name" value="ROLE_USER"/>
+        </insert>
+        <insert tableName="authorities">
+            <column name="name" value="UPLOAD"/>
         </insert>
     </changeSet>
     <changeSet id="1.0.1" author="cos7els">
@@ -50,13 +53,13 @@
             <column name="password" value="$2a$12$dPIe/Rcg1ABQkoaHsa.to.XJAmOI3NHuUnjgZ4yqTLACLL9MWHwba"/>
             <column name="email" value="cos7els@gmail.com"/>
         </insert>
-        <insert tableName="users_roles">
+        <insert tableName="users_authorities">
             <column name="user_id" value="1"/>
-            <column name="role_id" value="1"/>
+            <column name="authority_id" value="1"/>
         </insert>
-        <insert tableName="users_roles">
+        <insert tableName="users_authorities">
             <column name="user_id" value="1"/>
-            <column name="role_id" value="2"/>
+            <column name="authority_id" value="2"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

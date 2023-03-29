@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/authentication", "/registration")
                 .permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()

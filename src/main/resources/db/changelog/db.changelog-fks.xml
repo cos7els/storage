@@ -35,16 +35,16 @@
                                  referencedTableName="subscriptions"
                                  referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="users_roles"
+        <addForeignKeyConstraint baseTableName="users_authorities"
                                  baseColumnNames="user_id"
-                                 constraintName="users_roles_users_id_fk"
+                                 constraintName="users_authorities_users_id_fk"
                                  referencedTableName="users"
                                  referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="users_roles"
-                                 baseColumnNames="role_id"
-                                 constraintName="users_roles_roles_id_fk"
-                                 referencedTableName="roles"
+        <addForeignKeyConstraint baseTableName="users_authorities"
+                                 baseColumnNames="authority_id"
+                                 constraintName="users_authorities_authorities_id_fk"
+                                 referencedTableName="authorities"
                                  referencedColumnNames="id"/>
 
         <addForeignKeyConstraint baseTableName="subscriptions"
@@ -52,7 +52,6 @@
                                  constraintName="subscriptions_plans_id_fk"
                                  referencedTableName="plans"
                                  referencedColumnNames="id"/>
-
     </changeSet>
 
 </databaseChangeLog>

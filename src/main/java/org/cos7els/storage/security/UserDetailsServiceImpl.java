@@ -39,9 +39,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userDetails.setUsername(user.getUsername());
         userDetails.setPassword(user.getPassword());
         userDetails.setAuthorities(user
-                .getRoles()
+                .getAuthorities()
                 .stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList()));
         System.out.println(userDetails);
         return userDetails;

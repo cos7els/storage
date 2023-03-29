@@ -7,12 +7,12 @@
     <changeSet id="1.0.0" author="cos7els">
         <createSequence sequenceName="albums_id_seq"/>
         <createSequence sequenceName="albums_photos_id_seq"/>
+        <createSequence sequenceName="authorities_id_seq"/>
         <createSequence sequenceName="photos_id_seq"/>
         <createSequence sequenceName="plans_id_seq"/>
-        <createSequence sequenceName="roles_id_seq"/>
         <createSequence sequenceName="subscriptions_id_seq"/>
         <createSequence sequenceName="users_id_seq"/>
-        <createSequence sequenceName="users_roles_id_seq"/>
+        <createSequence sequenceName="users_authorities_id_seq"/>
     </changeSet>
 
     <changeSet id="1.0.1" author="cos7els">
@@ -44,6 +44,17 @@
     </changeSet>
 
     <changeSet id="1.0.3" author="cos7els">
+        <createTable tableName="authorities">
+            <column name="id" type="bigint" defaultValueSequenceNext="authorities_id_seq">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.4" author="cos7els">
         <createTable tableName="photos">
             <column name="id" type="bigint" defaultValueSequenceNext="photos_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
@@ -66,7 +77,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.4" author="cos7els">
+    <changeSet id="1.0.5" author="cos7els">
         <createTable tableName="plans">
             <column name="id" type="bigint" defaultValueSequenceNext="plans_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
@@ -89,16 +100,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.5" author="cos7els">
-        <createTable tableName="roles">
-            <column name="id" type="bigint" defaultValueSequenceNext="roles_id_seq">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar">
-                <constraints unique="true" nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
 
     <changeSet id="1.0.6" author="cos7els">
         <createTable tableName="subscriptions">
@@ -141,14 +142,14 @@
     </changeSet>
 
     <changeSet id="1.0.8" author="cos7els">
-        <createTable tableName="users_roles">
-            <column name="id" type="bigint" defaultValueSequenceNext="users_roles_id_seq">
+        <createTable tableName="users_authorities">
+            <column name="id" type="bigint" defaultValueSequenceNext="users_authorities_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="role_id" type="BIGINT">
+            <column name="authority_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>

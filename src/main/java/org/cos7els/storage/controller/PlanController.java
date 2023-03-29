@@ -1,8 +1,11 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.cos7els.storage.exception.CustomException;
+import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Plan;
 import org.cos7els.storage.model.User;
+import org.cos7els.storage.model.response.PlanResponse;
 import org.cos7els.storage.security.UserDetailsImpl;
 import org.cos7els.storage.service.PlanService;
 import org.cos7els.storage.service.UserService;
@@ -15,11 +18,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
+
+import static org.cos7els.storage.util.ExceptionMessage.PLANS_NOT_FOUND;
+import static org.cos7els.storage.util.ExceptionMessage.PLAN_NOT_FOUND;
+import static org.cos7els.storage.util.ExceptionMessage.CREATE_PLAN_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.UPDATE_PLAN_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.DELETE_PLAN_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.USER_NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,51 +35,62 @@ public class PlanController {
     private final PlanService planService;
     private final UserService userService;
 
+    @GetMapping("/plans")
+    public ResponseEntity<List<PlanResponse>> getPlans() {
+        List<Plan> plans = planService.getAllActivePlans()
+                .orElseThrow(() -> new NotFoundException(PLANS_NOT_FOUND));
+        return new ResponseEntity<>(
+                planService.plansToResponses(plans),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/plan")
-    public ResponseEntity<Plan> getPlan(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Optional<User> user = userService.getUser(userDetails.getId());
-        return user.isPresent() ?
-                new ResponseEntity<>(user.get().getSubscription().getPlan(), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<PlanResponse> getPlan(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        User user = userService.getUser(userDetails.getId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        return new ResponseEntity<>(
+                planService.planToResponse(user.getSubscription().getPlan()),
+                HttpStatus.OK
+        );
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Plan> getPlan(@PathVariable Long id) {
-        Optional<Plan> album = planService.getPlan(id);
-        return album.isPresent() ?
-                new ResponseEntity<>(album.get(), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping("/get/all")
+    @GetMapping("/admin/plans")
     public ResponseEntity<List<Plan>> getAllPlans() {
-        List<Plan> plans = planService.getAllPlans();
-        return plans.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(plans, HttpStatus.OK);
+        List<Plan> plans = planService.getAllPlans()
+                .orElseThrow(() -> new NotFoundException(PLANS_NOT_FOUND));
+        return new ResponseEntity<>(plans, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Plan> createPlan(@RequestBody Plan plan) {
-        return new ResponseEntity<>(planService.savePlan(plan), HttpStatus.CREATED);
+    @GetMapping("/admin/plan/{id}")
+    public ResponseEntity<Plan> getPlan(@PathVariable Long id) {
+        Plan plan = planService.getPlan(id)
+                .orElseThrow(() -> new NotFoundException(PLAN_NOT_FOUND));
+        return new ResponseEntity<>(plan, HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Plan> updatePlan(@PathVariable Long id, @RequestBody Plan plan) {
-        return planService.isPlanExists(id) ?
-                new ResponseEntity<>(planService.savePlan(plan), HttpStatus.OK) :
-                new ResponseEntity<>(planService.savePlan(plan), HttpStatus.CREATED);
+    @PostMapping("/admin/plan")
+    public ResponseEntity<Plan> createPlan(@RequestBody Plan request) {
+        Plan plan = planService.savePlan(request)
+                .orElseThrow(() -> new CustomException(CREATE_PLAN_EXCEPTION));
+        return new ResponseEntity<>(plan, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PutMapping("/admin/plan")
+    public ResponseEntity<Plan> updatePlan(@RequestBody Plan request) {
+        Plan plan = planService.savePlan(request)
+                .orElseThrow(() -> new CustomException(UPDATE_PLAN_EXCEPTION));
+        return new ResponseEntity<>(plan, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/plan/{id}")
     public ResponseEntity<HttpStatus> deletePlan(@PathVariable Long id) {
-        planService.deletePlan(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping("/delete/all")
-    public ResponseEntity<HttpStatus> deleteAllPlans() {
-        planService.deleteAllPlans();
+        Integer result = planService.deletePlan(id);
+        if (result == 0) {
+            throw new CustomException(DELETE_PLAN_EXCEPTION);
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
