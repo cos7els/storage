@@ -38,9 +38,7 @@ public class AlbumController {
     ) {
         List<Album> albums = albumService.getAllAlbums(userDetails.getId())
                 .orElseThrow(() -> new NotFoundException(ALBUMS_NOT_FOUND));
-        return new ResponseEntity<>(
-                albumService.albumsToResponses(albums), HttpStatus.OK
-        );
+        return new ResponseEntity<>(albumService.albumsToResponses(albums), HttpStatus.OK);
     }
 
     @GetMapping("/album/{id}")
@@ -50,9 +48,7 @@ public class AlbumController {
     ) {
         Album album = albumService.getAlbum(id, userDetails.getId())
                 .orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
-        return new ResponseEntity<>(
-                albumService.albumToResponse(album), HttpStatus.OK
-        );
+        return new ResponseEntity<>(albumService.albumToResponse(album), HttpStatus.OK);
     }
 
     @PostMapping("/album")
@@ -62,9 +58,7 @@ public class AlbumController {
     ) {
         Album album = albumService.saveAlbum(request, userDetails.getId())
                 .orElseThrow(() -> new CustomException(CREATE_ALBUM_EXCEPTION));
-        return new ResponseEntity<>(
-                albumService.albumToResponse(album), HttpStatus.CREATED
-        );
+        return new ResponseEntity<>(albumService.albumToResponse(album), git HttpStatus.CREATED);
     }
 
     @PutMapping("/album/{id}")
@@ -75,9 +69,7 @@ public class AlbumController {
     ) {
         Album album = albumService.updateAlbum(id, request, userDetails.getId())
                 .orElseThrow(() -> new CustomException(UPDATE_ALBUM_EXCEPTION));
-        return new ResponseEntity<>(
-                albumService.albumToResponse(album), HttpStatus.OK
-        );
+        return new ResponseEntity<>(albumService.albumToResponse(album), HttpStatus.OK);
     }
 
     @DeleteMapping("/album/{id}")
