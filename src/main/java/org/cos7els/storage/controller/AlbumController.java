@@ -58,7 +58,7 @@ public class AlbumController {
     ) {
         Album album = albumService.saveAlbum(request, userDetails.getId())
                 .orElseThrow(() -> new CustomException(CREATE_ALBUM_EXCEPTION));
-        return new ResponseEntity<>(albumService.albumToResponse(album), git HttpStatus.CREATED);
+        return new ResponseEntity<>(albumService.albumToResponse(album), HttpStatus.CREATED);
     }
 
     @PutMapping("/album/{id}")
