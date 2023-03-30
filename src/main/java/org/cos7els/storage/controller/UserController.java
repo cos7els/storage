@@ -9,7 +9,6 @@ import org.cos7els.storage.model.request.ChangePasswordRequest;
 import org.cos7els.storage.model.response.UserResponse;
 import org.cos7els.storage.security.UserDetailsImpl;
 import org.cos7els.storage.service.UserService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,7 +37,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<UserResponse> getUser(
-            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         User user = userService.getUser(userDetails.getId())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -51,7 +50,7 @@ public class UserController {
     @PutMapping("/user/change/email")
     public ResponseEntity<UserResponse> changeEmail(
             @RequestBody ChangeEmailRequest request,
-            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         User user = userService.changeEmail(request, userDetails.getId())
                 .orElseThrow(() -> new CustomException(CHANGE_EMAIL_EXCEPTION));
@@ -64,7 +63,7 @@ public class UserController {
     @PutMapping("/user/change/password")
     public ResponseEntity<UserResponse> changePassword(
             @RequestBody ChangePasswordRequest request,
-            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         User user = userService.changePassword(request, userDetails.getId())
                 .orElseThrow(() -> new CustomException(CHANGE_PASSWORD_EXCEPTION));
@@ -108,7 +107,7 @@ public class UserController {
                 .orElseThrow(() -> new CustomException(UPDATE_USER_EXCEPTION));
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
+    
     @DeleteMapping("/admin/user/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         Integer result = userService.deleteUser(id);

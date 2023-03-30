@@ -32,7 +32,6 @@ import static org.cos7els.storage.util.ExceptionMessage.DELETE_ALBUM_EXCEPTION;
 @RequiredArgsConstructor
 public class AlbumController {
     private final AlbumService albumService;
-
     @GetMapping("/albums")
     public ResponseEntity<List<AlbumResponse>> getAllAlbums(
             @AuthenticationPrincipal UserDetailsImpl userDetails

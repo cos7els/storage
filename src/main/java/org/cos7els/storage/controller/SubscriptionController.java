@@ -43,40 +43,40 @@ public class SubscriptionController {
         );
     }
 
-    @GetMapping("/admin/subscription/get/all")
+    @GetMapping("/admin/subscriptions")
     public ResponseEntity<List<Subscription>> getAllSubscriptions() {
         List<Subscription> subscriptions = subscriptionService.getAllSubscription()
                 .orElseThrow(() -> new NotFoundException(SUBSCRIPTIONS_NOT_FOUND));
         return new ResponseEntity<>(subscriptions, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/subscription/get/{id}")
+    @GetMapping("/admin/subscription/{id}")
     public ResponseEntity<Subscription> getSubscription(@PathVariable Long id) {
         Subscription subscription = subscriptionService.getSubscription(id)
                 .orElseThrow(() -> new NotFoundException(SUBSCRIPTION_NOT_FOUND));
         return new ResponseEntity<>(subscription, HttpStatus.OK);
     }
 
-    @PostMapping("/admin/subscription/create")
+    @PostMapping("/admin/subscription")
     public ResponseEntity<Subscription> createSubscription(@RequestBody Subscription request) {
         Subscription subscription = subscriptionService.saveSubscription(request)
                 .orElseThrow(() -> new CustomException(CREATE_SUBSCRIPTION_EXCEPTION));
         return new ResponseEntity<>(subscription, HttpStatus.CREATED);
     }
 
-    @PutMapping("admin/subscription/update")
+    @PutMapping("admin/subscription")
     public ResponseEntity<Subscription> updateSubscription(@RequestBody Subscription request) {
         Subscription subscription = subscriptionService.saveSubscription(request)
                 .orElseThrow(() -> new CustomException(UPDATE_SUBSCRIPTION_EXCEPTION));
         return new ResponseEntity<>(subscription, HttpStatus.OK);
     }
 
-    @DeleteMapping("/admin/subscription/delete/{id}")
+    @DeleteMapping("/admin/subscription/{id}")
     public ResponseEntity<HttpStatus> deleteSubscription(@PathVariable Long id) {
         Integer result = subscriptionService.deleteSubscription(id);
         if (result == 0) {
             throw new CustomException(DELETE_SUBSCRIPTION_EXCEPTION);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
