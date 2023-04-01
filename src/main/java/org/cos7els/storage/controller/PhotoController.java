@@ -1,5 +1,11 @@
 package org.cos7els.storage.controller;
 
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Photo;
@@ -20,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +41,7 @@ public class PhotoController {
 
     @GetMapping("/photos")
     public ResponseEntity<List<PhotoResponse>> getAllPhotos(
-            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         List<Photo> photos = photoService.getAllPhotos(userDetails.getId())
                 .orElseThrow(() -> new NotFoundException(PHOTOS_NOT_FOUND));
@@ -58,7 +66,7 @@ public class PhotoController {
     public ResponseEntity<Photo> uploadPhoto(
             @RequestPart("data") MultipartFile file,
             @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails
-    ) throws IOException {
+    ) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         Photo photo = photoService.uploadPhoto(file, userDetails.getId());
         return new ResponseEntity<>(photo, HttpStatus.CREATED);
     }

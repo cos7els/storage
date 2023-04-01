@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -47,7 +48,9 @@ public class AlbumController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         Album album = albumService.getAlbum(id, userDetails.getId())
-                .orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, ALBUM_NOT_FOUND
+                ));
         return new ResponseEntity<>(albumService.albumToResponse(album), HttpStatus.OK);
     }
 

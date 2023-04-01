@@ -9,16 +9,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "photos", schema = "public")
 public class Photo {
+//    @Id
+//    @Column(name = "id")
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "photos_seq")
+//    @SequenceGenerator(name = "photos_seq", sequenceName = "photos_id_seq", allocationSize = 1)
+//    private Long id;
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "photos_seq")
-    @SequenceGenerator(name = "photos_seq", sequenceName = "photos_id_seq", allocationSize = 1)
-    private Long id;
+    private UUID id;
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "file_name")

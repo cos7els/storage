@@ -1,6 +1,18 @@
 package org.cos7els.storage.service.impl;
 
+import io.github.rctcwyvrn.blake3.Blake3;
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Photo;
 import org.cos7els.storage.model.User;
@@ -9,15 +21,19 @@ import org.cos7els.storage.repository.PhotoRepository;
 import org.cos7els.storage.repository.UserRepository;
 import org.cos7els.storage.service.PhotoService;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,10 +42,16 @@ import static org.cos7els.storage.util.ExceptionMessage.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@PropertySource("classpath:minio.properties")
 public class PhotoServiceImpl implements PhotoService {
-    private final Path ROOT = Paths.get("data");
+    @Value("${photo-bucket}")
+    private String photoBucket;
+    @Value("${thumbnail-bucket}")
+    private String thumbnailBucket;
     private final PhotoRepository photoRepository;
     private final UserRepository userRepository;
+    private final MinioClient minioClient;
+    private final Blake3 blake3;
 
     public Optional<Photo> getPhoto(Long photoId, Long userId) {
         return photoRepository.findPhotoByIdAndUserId(photoId, userId);
@@ -39,19 +61,73 @@ public class PhotoServiceImpl implements PhotoService {
         return photoRepository.findPhotosByUserIdOrderById(userId);
     }
 
-    public Photo uploadPhoto(MultipartFile file, Long userId) throws IOException {
+    public Photo uploadPhoto(MultipartFile file, Long userId) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        System.out.println(file.getInputStream().available());
         String filename = file.getOriginalFilename();
-        File currentUserPath = ROOT.resolve(user.getUsername()).toFile();
-        if (!currentUserPath.exists()) {
-            currentUserPath.mkdir();
-        }
-        Files.copy(file.getInputStream(), currentUserPath.toPath().resolve(filename));
-        Photo photo = createUploadedPhoto(file, user);
+        String hash = hash(user.getUsername(), filename);
+        String contentType = file.getContentType();
+        InputStream thumbnailInputStream = generateThumbnail(file.getInputStream());
+        InputStream photoInputStream = file.getInputStream();
+        putObject(photoBucket, hash, photoInputStream, contentType);
+        putObject(thumbnailBucket, hash, thumbnailInputStream, contentType);
+        Photo photo = createUploadedPhoto(file, user, hash);
         user.setUsedSpace(user.getUsedSpace() + file.getSize());
         userRepository.save(user);
         return photoRepository.save(photo);
+    }
+
+    public void putObject(
+            String bucket,
+            String hash,
+            InputStream inputStream,
+            String contentType
+    ) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        try (inputStream) {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucket)
+                            .object(hash)
+                            .stream(inputStream, inputStream.available(), -1L)
+                            .contentType(contentType)
+                            .build()
+            );
+        }
+    }
+
+    public InputStream generateThumbnail(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (inputStream) {
+            Thumbnailator.createThumbnail(inputStream, byteArrayOutputStream, 300, 300);
+        }
+        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+    }
+
+    private String hash(String username, String filename) {
+        blake3.update(filename.getBytes());
+        String hash = blake3.hexdigest();
+        return String.format(
+                "%s/%s/%s.%s",
+                username,
+                hash.substring(0, 2),
+                hash.substring(2),
+                filename.substring(filename.indexOf('.'))
+        );
+    }
+
+    private void createBucketIfNotExists(String username) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        boolean bucketExists = minioClient.bucketExists(
+                BucketExistsArgs.builder()
+                        .bucket(username)
+                        .build());
+        if (!bucketExists) {
+            minioClient.makeBucket(
+                    MakeBucketArgs.builder()
+                            .bucket(username)
+                            .build()
+            );
+        }
     }
 
     public Optional<Photo> deletePhoto(Long photoId, Long userId) {
@@ -72,13 +148,13 @@ public class PhotoServiceImpl implements PhotoService {
         return photos;
     }
 
-    private Photo createUploadedPhoto(MultipartFile file, User user) {
+    private Photo createUploadedPhoto(MultipartFile file, User user, String root) {
         Photo photo = new Photo();
         photo.setUserId(user.getId());
         photo.setFileName(file.getOriginalFilename());
         photo.setContentType(file.getContentType());
         photo.setSize(file.getSize());
-        photo.setPath(ROOT.resolve(user.getUsername()).resolve(file.getOriginalFilename()).toString());
+        photo.setPath(root);
         return photo;
     }
 
@@ -108,7 +184,7 @@ public class PhotoServiceImpl implements PhotoService {
         );
     }
 
-    public List<PhotoResponse> photosToResponses(@NotNull List<Photo> photos) {
+    public List<PhotoResponse> photosToResponses(List<Photo> photos) {
         return photos.stream()
                 .map(this::photoToResponse)
                 .collect(Collectors.toList());
