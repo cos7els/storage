@@ -32,11 +32,6 @@
             <column name="monthly_price" value="5.99"/>
             <column name="yearly_price" value="59.99"/>
         </insert>
-        <insert tableName="subscriptions">
-            <column name="plan_id" value="4"/>
-            <column name="issued_date" value="now()"/>
-            <column name="expired_date" value="2050-01-01"/>
-        </insert>
         <insert tableName="authorities">
             <column name="name" value="ADMIN"/>
         </insert>
@@ -52,6 +47,11 @@
             <column name="username" value="cos7els"/>
             <column name="password" value="$2a$12$dPIe/Rcg1ABQkoaHsa.to.XJAmOI3NHuUnjgZ4yqTLACLL9MWHwba"/>
             <column name="email" value="cos7els@gmail.com"/>
+        </insert>
+        <insert tableName="subscriptions">
+            <column name="plan_id" value="4"/>
+            <column name="issued_date" value="now()"/>
+            <column name="expired_date" value="2050-01-01"/>
         </insert>
         <insert tableName="users_authorities">
             <column name="user_id" value="1"/>

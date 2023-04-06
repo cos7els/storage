@@ -18,7 +18,9 @@ public interface PhotoService {
 
     void deletePhotos(SelectPhotoRequest request, Long userId);
 
-    void deleteAllUsersPhotos(Long userId);
+    void deletePhoto(Long photoId, Long userId);
+
+    void deletePhotos(Long userId);
 
     List<ThumbnailResponse> photosToThumbnails(List<Photo> photos);
 
@@ -28,5 +30,9 @@ public interface PhotoService {
 
     PhotoResponse photoToResponse(Photo photo);
 
-    byte[] downloadPhotos(SelectPhotoRequest request, Long userId);
+    byte[] downloadPhotos(SelectPhotoRequest selectPhotoRequest, Long userId);
+
+    byte[] dowloadPhotos(List<Photo> photos);
+
+    List<Photo> getPhotosByIds(List<Long> photoIds, Long userId);
 }

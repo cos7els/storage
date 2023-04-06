@@ -1,7 +1,7 @@
 package org.cos7els.storage.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.CustomException;
+import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Authority;
 import org.cos7els.storage.repository.AuthorityRepository;
@@ -48,7 +48,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     private Authority insertAuthority(Authority authority) {
         Authority savedAuthority = authorityRepository.save(authority);
         if (savedAuthority == null) {
-            throw new CustomException(INSERT_AUTHORITY_EXCEPTION);
+            throw new InternalException(INSERT_AUTHORITY_EXCEPTION);
         }
         return savedAuthority;
     }
@@ -56,7 +56,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     public void deleteAuthority(Long id) {
         int result = authorityRepository.deleteAuthorityById(id);
         if (result == 0) {
-            throw new CustomException(DELETE_AUTHORITY_EXCEPTION);
+            throw new InternalException(DELETE_AUTHORITY_EXCEPTION);
         }
     }
 }

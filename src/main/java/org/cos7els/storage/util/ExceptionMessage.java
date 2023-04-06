@@ -6,13 +6,12 @@ public interface ExceptionMessage {
     String USERS_NOT_FOUND = "Users not found";
     String USER_NOT_FOUND = "User not found";
     String CREATE_USER_EXCEPTION = "Create user exception";
-    String UPDATE_USER_EXCEPTION = "Create user exception";
+    String INSERT_USER_EXCEPTION = "Insert user exception";
     String DELETE_USER_EXCEPTION = "Delete user exception";
 
     String ALBUMS_NOT_FOUND = "Albums not found";
     String ALBUM_NOT_FOUND = "Album not found";
-    String CREATE_ALBUM_EXCEPTION = "Create album exception";
-    String UPDATE_ALBUM_EXCEPTION = "Update album exception";
+    String INSERT_ALBUM_EXCEPTION = "Insert album exception";
     String DELETE_ALBUM_EXCEPTION = "Delete album exception";
 
     String AUTHORITIES_NOT_FOUND = "Authorities not found";
@@ -38,6 +37,6 @@ public interface ExceptionMessage {
 
     String REGISTER_EXCEPTION = "Register user exception";
     String CHANGE_PASSWORD_EXCEPTION = "Change password exception";
-    String CHANGE_PASSWORD_BAD_REQUEST = "Passwords doesn't match";
+    String CHANGE_PASSWORD_BAD_CREDENTIALS = "Passwords doesn't match";
     String CHANGE_EMAIL_EXCEPTION = "Change email exception";
 }

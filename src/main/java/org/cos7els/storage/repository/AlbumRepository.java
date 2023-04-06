@@ -11,14 +11,13 @@ import java.util.Optional;
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
 
-    List<Album> findAlbumsByUserIdOrderById(Long userId);
+    List<Album> findAlbumsByUserId(Long userId);
 
     Optional<Album> findAlbumByIdAndUserId(Long albumId, Long userId);
 
     @Transactional
-    Integer deleteAlbumByIdAndUserId(Long albumId, Long userId);
+    int deleteAlbumByIdAndUserId(Long albumId, Long userId);
 
-    Integer deleteAlbumById(Long id);
-
+    @Transactional
     int deleteAlbumsByUserId(Long userId);
 }

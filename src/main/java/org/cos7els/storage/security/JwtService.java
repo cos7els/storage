@@ -10,7 +10,6 @@ import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -57,11 +56,6 @@ public class JwtService {
         } catch (ExpiredJwtException | MalformedJwtException | SignatureException | DecodingException e) {
             return false;
         }
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        String extractedUsername = extractUsername(token);
-        return extractedUsername.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

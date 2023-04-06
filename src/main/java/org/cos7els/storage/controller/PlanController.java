@@ -3,11 +3,9 @@ package org.cos7els.storage.controller;
 import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.model.Plan;
 import org.cos7els.storage.model.response.PlanResponse;
-import org.cos7els.storage.security.UserDetailsImpl;
 import org.cos7els.storage.service.PlanService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +24,7 @@ public class PlanController {
     @GetMapping("/plans")
     public ResponseEntity<List<PlanResponse>> getPlans() {
         return new ResponseEntity<>(
-                planService.getAllActivePlans(),
+                planService.getActivePlans(),
                 HttpStatus.OK
         );
     }

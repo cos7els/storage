@@ -7,7 +7,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.CustomException;
+import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NoContentException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Photo;
@@ -48,12 +48,18 @@ public class PhotoServiceImpl implements PhotoService {
     @Value("${ZIP_MAX_SIZE}")
     private Double ZIP_MAX_SIZE;
 
-    public byte[] downloadPhotos(SelectPhotoRequest request, Long userId) {
-        List<PhotoResponse> photos = photosToResponses(getPhotosByRequest(request.getIds(), userId));
-        int parts = calculateParts(photos.stream().mapToLong(PhotoResponse::getSize).sum());
+    public byte[] downloadPhotos(SelectPhotoRequest selectPhotoRequest, Long userId) {
+        return writeZipArchive(photosToResponses(photoRepository.getPhotosByIds(selectPhotoRequest.getIds())));
+    }
+
+    public byte[] dowloadPhotos(List<Photo> photos) {
+        return writeZipArchive(photosToResponses(photos));
+    }
+
+    private byte[] writeZipArchive(List<PhotoResponse> photoResponses) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try (ZipOutputStream zos = new ZipOutputStream(out)) {
-            for (PhotoResponse p : photos) {
+            for (PhotoResponse p : photoResponses) {
                 ZipEntry entry = new ZipEntry(p.getFileName());
                 zos.putNextEntry(entry);
                 zos.write(p.getData());
@@ -66,15 +72,8 @@ public class PhotoServiceImpl implements PhotoService {
         return out.toByteArray();
     }
 
-    private int calculateParts(long size) {
-        return (int) Math.ceil(
-                size / ZIP_MAX_SIZE
-        );
-    }
-
     public List<ThumbnailResponse> getPhotos(Long userId) {
-        List<Photo> photos = selectPhotos(userId);
-        return photosToThumbnails(photos);
+        return photosToThumbnails(selectPhotos(userId));
     }
 
     public PhotoResponse getPhoto(Long photoId, Long userId) {
@@ -99,7 +98,7 @@ public class PhotoServiceImpl implements PhotoService {
         extractExif(file, photo);
         Photo savedPhoto = photoRepository.save(photo);
         if (savedPhoto == null) {
-            throw new CustomException(INSERT_PHOTO_EXCEPTION);
+            throw new InternalException(INSERT_PHOTO_EXCEPTION);
         }
     }
 
@@ -181,20 +180,24 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     private Photo selectPhoto(Long photoId, Long userId) {
-        return photoRepository.findPhotoByIdAndUserId(photoId, userId)
+        return photoRepository.getPhotoByIdAndUserId(photoId, userId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND));
     }
 
     @Transactional
     public void deletePhotos(SelectPhotoRequest request, Long userId) {
         deletePhotos(
-                getPhotosByRequest(request.getIds(), userId),
+                getPhotosByIds(request.getIds(), userId),
                 userId
         );
     }
 
+    public void deletePhoto(Long photoId, Long userId) {
+        deletePhotos(List.of(selectPhoto(photoId, userId)), userId);
+    }
+
     @Transactional
-    public void deleteAllUsersPhotos(Long userId) {
+    public void deletePhotos(Long userId) {
         deletePhotos(selectPhotos(userId), userId);
     }
 
@@ -206,8 +209,8 @@ public class PhotoServiceImpl implements PhotoService {
         userService.updateUsedSpace(userId, count * -1L);
     }
 
-    private List<Photo> getPhotosByRequest(List<Long> ids, Long userId) {
-        return photoRepository.findAllById(ids)
+    public List<Photo> getPhotosByIds(List<Long> photoIds, Long userId) {
+        return photoRepository.findAllById(photoIds)
                 .stream()
                 .filter(p -> p.getUserId().equals(userId))
                 .collect(Collectors.toList());

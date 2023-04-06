@@ -12,5 +12,4 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateAlbumRequest {
     private String title;
-    private List<PhotoResponse> photos;
 }

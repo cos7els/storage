@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AlbumResponse {
+    private Long id;
     private String title;
     private List<ThumbnailResponse> photos;
 }

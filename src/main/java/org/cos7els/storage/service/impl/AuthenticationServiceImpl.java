@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 public class AuthenticationServiceImpl {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-
     private final AuthenticationManager authenticationManager;
 
     @NoLogging

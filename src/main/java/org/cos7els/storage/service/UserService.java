@@ -8,20 +8,21 @@ import org.cos7els.storage.model.response.UserResponse;
 import java.util.List;
 
 public interface UserService {
-    UserResponse getUserResponse(Long id);
-    User getUser(Long id);
+    UserResponse getUserResponse(Long userId);
+
+    User getUser(Long userId);
 
     List<User> getAllUsers();
 
     User saveUser(User user);
 
-    void deleteUser(Long id);
+    void deleteUser(Long userId);
 
-    UserResponse changePassword(ChangePasswordRequest request, Long id);
+    UserResponse changePassword(ChangePasswordRequest request, Long userId);
 
-    UserResponse changeEmail(ChangeEmailRequest request, Long id);
+    UserResponse changeEmail(ChangeEmailRequest request, Long userId);
 
-    void updateUsedSpace(Long id, Long size);
+    void updateUsedSpace(Long userId, Long size);
 
     List<UserResponse> usersToResponses(List<User> users);
 

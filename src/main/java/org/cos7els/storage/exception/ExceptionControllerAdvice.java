@@ -1,15 +1,12 @@
 package org.cos7els.storage.exception;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.time.LocalDateTime;
 
@@ -18,9 +15,7 @@ import java.time.LocalDateTime;
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(NoContentException.class)
-    public ResponseEntity<HttpStatus> noContentExceptionHandler(
-            NoContentException exception
-    ) {
+    public ResponseEntity<HttpStatus> noContentExceptionHandler() {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
@@ -53,9 +48,9 @@ public class ExceptionControllerAdvice {
         return new ResponseEntity<>(details, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(CustomException.class)
+    @ExceptionHandler(InternalException.class)
     public ResponseEntity<ExceptionDetails> customExceptionHandler(
-            CustomException exception
+            InternalException exception
     ) {
         ExceptionDetails details = new ExceptionDetails(
                 HttpStatus.INTERNAL_SERVER_ERROR,
@@ -79,6 +74,7 @@ public class ExceptionControllerAdvice {
                         )
                 );
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDetails> exceptionHandler(Exception exception) {

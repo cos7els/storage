@@ -1,7 +1,7 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.CustomException;
+import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Subscription;
 import org.cos7els.storage.model.response.SubscriptionResponse;
@@ -60,14 +60,14 @@ public class SubscriptionController {
     @PostMapping("/admin/subscription")
     public ResponseEntity<Subscription> createSubscription(@RequestBody Subscription request) {
         Subscription subscription = subscriptionService.saveSubscription(request)
-                .orElseThrow(() -> new CustomException(CREATE_SUBSCRIPTION_EXCEPTION));
+                .orElseThrow(() -> new InternalException(CREATE_SUBSCRIPTION_EXCEPTION));
         return new ResponseEntity<>(subscription, HttpStatus.CREATED);
     }
 
     @PutMapping("admin/subscription")
     public ResponseEntity<Subscription> updateSubscription(@RequestBody Subscription request) {
         Subscription subscription = subscriptionService.saveSubscription(request)
-                .orElseThrow(() -> new CustomException(UPDATE_SUBSCRIPTION_EXCEPTION));
+                .orElseThrow(() -> new InternalException(UPDATE_SUBSCRIPTION_EXCEPTION));
         return new ResponseEntity<>(subscription, HttpStatus.OK);
     }
 
@@ -75,7 +75,7 @@ public class SubscriptionController {
     public ResponseEntity<HttpStatus> deleteSubscription(@PathVariable Long id) {
         Integer result = subscriptionService.deleteSubscription(id);
         if (result == 0) {
-            throw new CustomException(DELETE_SUBSCRIPTION_EXCEPTION);
+            throw new InternalException(DELETE_SUBSCRIPTION_EXCEPTION);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -1,14 +1,12 @@
 package org.cos7els.storage.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.CustomException;
+import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Plan;
 import org.cos7els.storage.model.response.PlanResponse;
 import org.cos7els.storage.repository.PlanRepository;
 import org.cos7els.storage.service.PlanService;
-import org.cos7els.storage.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.stream.Collectors;
 
 import static org.cos7els.storage.util.ExceptionMessage.DELETE_PLAN_EXCEPTION;
 import static org.cos7els.storage.util.ExceptionMessage.INSERT_PLAN_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.PLANS_NOT_FOUND;
 import static org.cos7els.storage.util.ExceptionMessage.PLAN_NOT_FOUND;
 
 @Service
@@ -24,11 +21,8 @@ import static org.cos7els.storage.util.ExceptionMessage.PLAN_NOT_FOUND;
 public class PlanServiceImpl implements PlanService {
     private final PlanRepository planRepository;
 
-    public List<PlanResponse> getAllActivePlans() {
+    public List<PlanResponse> getActivePlans() {
         List<Plan> plans = planRepository.getPlansByIsActiveTrueOrderById();
-        if (plans == null || plans.isEmpty()) {
-            throw new NotFoundException(PLANS_NOT_FOUND);
-        }
         return plansToResponses(plans);
     }
 
@@ -66,15 +60,12 @@ public class PlanServiceImpl implements PlanService {
     public void deletePlan(Long id) {
         int result = planRepository.deletePlanById(id);
         if (result == 0) {
-            throw new CustomException(DELETE_PLAN_EXCEPTION);
+            throw new InternalException(DELETE_PLAN_EXCEPTION);
         }
     }
 
     private List<Plan> selectAllPlans() {
         List<Plan> plans = planRepository.findAll();
-        if (plans == null || plans.isEmpty()) {
-            throw new NotFoundException(PLANS_NOT_FOUND);
-        }
         return plans;
     }
 
@@ -86,7 +77,7 @@ public class PlanServiceImpl implements PlanService {
     private Plan insertPlan(Plan plan) {
         Plan savedPlan = planRepository.save(plan);
         if (savedPlan == null) {
-            throw new CustomException(INSERT_PLAN_EXCEPTION);
+            throw new InternalException(INSERT_PLAN_EXCEPTION);
         }
         return savedPlan;
     }

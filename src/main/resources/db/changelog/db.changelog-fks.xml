@@ -7,51 +7,67 @@
     <changeSet id="1.0.0" author="cos7els">
         <addForeignKeyConstraint baseTableName="albums"
                                  baseColumnNames="user_id"
-                                 constraintName="albums_users_id_fk"
+                                 constraintName="albums_users_fk"
                                  referencedTableName="users"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="albums_photos"
                                  baseColumnNames="album_id"
-                                 constraintName="albums_photos_albums_id_fk"
+                                 constraintName="albums_photos_albums_fk"
                                  referencedTableName="albums"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="albums_photos"
                                  baseColumnNames="photo_id"
-                                 constraintName="albums_photos_photos_id_fk"
+                                 constraintName="albums_photos_photos_fk"
                                  referencedTableName="photos"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="photos"
                                  baseColumnNames="user_id"
-                                 constraintName="photos_users_id_fk"
+                                 constraintName="photos_users_fk"
                                  referencedTableName="users"
-                                 referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="users"
-                                 baseColumnNames="id"
-                                 constraintName="users_subscriptions_id_fk"
-                                 referencedTableName="subscriptions"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="users_authorities"
                                  baseColumnNames="user_id"
-                                 constraintName="users_authorities_users_id_fk"
+                                 constraintName="users_authorities_users_fk"
                                  referencedTableName="users"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="users_authorities"
                                  baseColumnNames="authority_id"
-                                 constraintName="users_authorities_authorities_id_fk"
+                                 constraintName="users_authorities_authorities_fk"
                                  referencedTableName="authorities"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="subscriptions"
                                  baseColumnNames="plan_id"
-                                 constraintName="subscriptions_plans_id_fk"
+                                 constraintName="subscriptions_plans_fk"
                                  referencedTableName="plans"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="subscriptions"
+                                 baseColumnNames="id"
+                                 constraintName="subscriptions_users_id_fk"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
     </changeSet>
 
 </databaseChangeLog>

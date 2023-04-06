@@ -29,7 +29,7 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @GetMapping("/photos")
-    public ResponseEntity<List<ThumbnailResponse>> getAllPhotos(
+    public ResponseEntity<List<ThumbnailResponse>> getPhotos(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return new ResponseEntity<>(
@@ -38,51 +38,47 @@ public class PhotoController {
         );
     }
 
-    @GetMapping("/photo/{id}")
+    @GetMapping("/photo/{photoId}")
     public ResponseEntity<PhotoResponse> getPhoto(
-            @PathVariable Long id,
+            @PathVariable Long photoId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        PhotoResponse response = photoService.getPhoto(id, userDetails.getId());
+        PhotoResponse response = photoService.getPhoto(photoId, userDetails.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/photos/download")
     public ResponseEntity<byte[]> downloadPhotos(
-            @RequestBody SelectPhotoRequest request,
+            @RequestBody SelectPhotoRequest selectPhotoRequest,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        if (request.getIds().size() == 1) {
-            return downloadPhoto(request.getIds().get(0), userDetails);
-        }
+//        if (selectPhotoRequest.getIds().size() == 1) {
+//            return downloadPhoto(selectPhotoRequest.getIds().get(0), userDetails);
+//        }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/zip"));
-//        headers.setContentDisposition(ContentDisposition.attachment().build());
         headers.setContentDisposition(ContentDisposition.parse("attachment; filename=photos.zip"));
         return new ResponseEntity<>(
-                photoService.downloadPhotos(request, userDetails.getId()),
+                photoService.downloadPhotos(selectPhotoRequest, userDetails.getId()),
                 headers,
                 HttpStatus.OK
         );
     }
 
-    @GetMapping("/photo/{id}/download")
+    @GetMapping("/photo/{photoId}/download")
     public ResponseEntity<byte[]> downloadPhoto(
-            @PathVariable Long id,
+            @PathVariable Long photoId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        PhotoResponse response = photoService.getPhoto(id, userDetails.getId());
+        PhotoResponse photoResponse = photoService.getPhoto(photoId, userDetails.getId());
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf(response.getContentType()));
-        headers.setContentDisposition(
-                ContentDisposition
-                        .parse("attachment; filename=" + response.getFileName())
-        );
-        return new ResponseEntity<>(response.getData(), headers, HttpStatus.OK);
+        headers.setContentType(MediaType.parseMediaType(photoResponse.getContentType()));
+        headers.setContentDisposition(ContentDisposition.parse("attachment; filename=" + photoResponse.getFileName()));
+        return new ResponseEntity<>(photoResponse.getData(), headers, HttpStatus.OK);
     }
 
     @PostMapping("/photos/upload")
-    public ResponseEntity<HttpStatus> uploadPhoto(
+    public ResponseEntity<HttpStatus> uploadPhotos(
             @RequestPart("files") MultipartFile[] files,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -91,11 +87,19 @@ public class PhotoController {
     }
 
     @DeleteMapping("/photo")
-    public ResponseEntity<HttpStatus> deletePhoto(
-            @RequestBody SelectPhotoRequest request,
+    public ResponseEntity<HttpStatus> deletePhotos(
+            @RequestBody SelectPhotoRequest selectPhotoRequest,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        photoService.deletePhotos(request, userDetails.getId());
+        photoService.deletePhotos(selectPhotoRequest, userDetails.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/photo/{photoId}")
+    public ResponseEntity<HttpStatus> deletePhoto(
+            @PathVariable Long photoId, @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        photoService.deletePhoto(photoId, userDetails.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -103,7 +107,7 @@ public class PhotoController {
     public ResponseEntity<HttpStatus> deletePhotos(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        photoService.deleteAllUsersPhotos(userDetails.getId());
+        photoService.deletePhotos(userDetails.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
