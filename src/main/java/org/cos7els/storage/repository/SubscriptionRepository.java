@@ -9,5 +9,5 @@ import javax.transaction.Transactional;
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     @Transactional
-    Integer deleteSubscriptionById(Long id);
+    int deleteSubscriptionById(Long id);
 }

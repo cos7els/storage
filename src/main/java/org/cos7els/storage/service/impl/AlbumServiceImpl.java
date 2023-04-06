@@ -42,19 +42,17 @@ public class AlbumServiceImpl implements AlbumService {
         return Optional.of(albumRepository.save(album));
     }
 
-    @Override
-    public Optional<Album> updateAlbum(Long albumId, UpdateAlbumRequest request, Long userId) {
-        Album album = albumRepository.findAlbumByIdAndUserId(albumId, userId)
-                .orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
-        album.setTitle(request.getTitle());
-        album.setPhotos(
-                request.getPhotos().stream()
-                        .map(p -> photoService.getPhoto(p.getId(), userId)
-                                .orElseThrow(() -> new NotFoundException(PHOTO_NOT_FOUND)))
-                        .collect(Collectors.toList())
-        );
-        return Optional.of(albumRepository.save(album));
-    }
+//    public Optional<Album> updateAlbum(Long albumId, UpdateAlbumRequest request, Long userId) {
+//        Album album = albumRepository.findAlbumByIdAndUserId(albumId, userId)
+//                .orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
+//        album.setTitle(request.getTitle());
+//        album.setPhotos(
+//                request.getPhotos().stream()
+//                        .map(p -> photoService.getPhoto(p.getId(), userId))
+//                        .collect(Collectors.toList())
+//        );
+//        return Optional.of(albumRepository.save(album));
+//    }
 
     @Override
     public Integer deleteAlbum(Long albumId, Long userId) {
@@ -65,7 +63,7 @@ public class AlbumServiceImpl implements AlbumService {
     public AlbumResponse albumToResponse(Album album) {
         return new AlbumResponse(
                 album.getTitle(),
-                photoService.photosToResponses(album.getPhotos())
+                photoService.photosToThumbnails(album.getPhotos())
         );
     }
 

@@ -1,21 +1,26 @@
 package org.cos7els.storage.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.model.Subscription;
 import org.cos7els.storage.model.response.SubscriptionResponse;
 import org.cos7els.storage.repository.SubscriptionRepository;
 import org.cos7els.storage.service.PlanService;
 import org.cos7els.storage.service.SubscriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final PlanService planService;
+
+    @Autowired
+    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, PlanService planService) {
+        this.subscriptionRepository = subscriptionRepository;
+        this.planService = planService;
+    }
 
     public Optional<List<Subscription>> getAllSubscription() {
         return Optional.of(subscriptionRepository.findAll());

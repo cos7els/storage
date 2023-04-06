@@ -1,5 +1,6 @@
 package org.cos7els.storage.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.aspect.NoLogging;
 import org.springframework.lang.NonNull;

@@ -43,7 +43,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList()));
-        System.out.println(userDetails);
         return userDetails;
     }
 }

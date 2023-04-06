@@ -15,7 +15,7 @@ public interface AlbumService {
 
     Optional<Album> saveAlbum(CreateAlbumRequest request, Long userId);
 
-    Optional<Album> updateAlbum(Long albumId, UpdateAlbumRequest request, Long userId);
+//    Optional<Album> updateAlbum(Long albumId, UpdateAlbumRequest request, Long userId);
 
     Integer deleteAlbum(Long albumId, Long userId);
 

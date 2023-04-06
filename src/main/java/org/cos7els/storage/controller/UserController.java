@@ -1,8 +1,6 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.CustomException;
-import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.User;
 import org.cos7els.storage.model.request.ChangeEmailRequest;
 import org.cos7els.storage.model.request.ChangePasswordRequest;
@@ -22,14 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.USERS_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.USER_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.CREATE_USER_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.UPDATE_USER_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.DELETE_USER_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.CHANGE_EMAIL_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.CHANGE_PASSWORD_EXCEPTION;
-
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -39,10 +29,8 @@ public class UserController {
     public ResponseEntity<UserResponse> getUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        User user = userService.getUser(userDetails.getId())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return new ResponseEntity<>(
-                userService.userToResponse(user),
+                userService.getUserResponse(userDetails.getId()),
                 HttpStatus.OK
         );
     }
@@ -52,10 +40,8 @@ public class UserController {
             @RequestBody ChangeEmailRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        User user = userService.changeEmail(request, userDetails.getId())
-                .orElseThrow(() -> new CustomException(CHANGE_EMAIL_EXCEPTION));
         return new ResponseEntity<>(
-                userService.userToResponse(user),
+                userService.changeEmail(request, userDetails.getId()),
                 HttpStatus.OK
         );
     }
@@ -65,55 +51,43 @@ public class UserController {
             @RequestBody ChangePasswordRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        User user = userService.changePassword(request, userDetails.getId())
-                .orElseThrow(() -> new CustomException(CHANGE_PASSWORD_EXCEPTION));
         return new ResponseEntity<>(
-                userService.userToResponse(user),
+                userService.changePassword(request, userDetails.getId()),
                 HttpStatus.OK
         );
     }
 
-    @DeleteMapping("/user/delete")
-    public ResponseEntity<User> deleteUser(
+    @DeleteMapping("/user")
+    public ResponseEntity<HttpStatus> deleteUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+        userService.deleteUser(userDetails.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/admin/user")
+    @GetMapping("/admin/users")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers()
-                .orElseThrow(() -> new NotFoundException(USERS_NOT_FOUND));
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/admin/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
-        User user = userService.getUser(id)
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
     }
 
     @PostMapping("/admin/user")
-    public ResponseEntity<User> createUser(@RequestBody User request) {
-        User user = userService.saveUser(request)
-                .orElseThrow(() -> new CustomException(CREATE_USER_EXCEPTION));
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping("admin/user")
-    public ResponseEntity<User> updateUser(@RequestBody User request) {
-        User user = userService.saveUser(request)
-                .orElseThrow(() -> new CustomException(UPDATE_USER_EXCEPTION));
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/admin/user/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
-        Integer result = userService.deleteUser(id);
-        if (result == 0) {
-            throw new CustomException(DELETE_USER_EXCEPTION);
-        }
+        userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

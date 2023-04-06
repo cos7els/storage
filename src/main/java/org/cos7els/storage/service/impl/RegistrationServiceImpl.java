@@ -1,16 +1,16 @@
 package org.cos7els.storage.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Plan;
 import org.cos7els.storage.model.Authority;
 import org.cos7els.storage.model.Subscription;
 import org.cos7els.storage.model.User;
 import org.cos7els.storage.model.request.RegistrationRequest;
-import org.cos7els.storage.repository.PlanRepository;
-import org.cos7els.storage.repository.AuthorityRepository;
-import org.cos7els.storage.repository.UserRepository;
+import org.cos7els.storage.model.response.UserResponse;
+import org.cos7els.storage.service.AuthorityService;
+import org.cos7els.storage.service.PlanService;
 import org.cos7els.storage.service.RegistrationService;
+import org.cos7els.storage.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,11 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.cos7els.storage.util.ExceptionMessage.PLAN_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.AUTHORITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -32,19 +28,16 @@ public class RegistrationServiceImpl implements RegistrationService {
     private Long FREE_PLAN_ID;
     @Value("#{'${DEFAULT_AUTHORITIES_IDS}'.split(',')}")
     private List<Long> DEFAULT_AUTHORITIES_IDS;
-    @Value("${DEFAULT_USED_SPACE}")
-    private Long DEFAULT_USED_SPACE;
     @Value("${FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE}")
     private String FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE;
-    private final UserRepository userRepository;
-    private final PlanRepository planRepository;
-    private final AuthorityRepository authorityRepository;
+    private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
+    private final PlanService planService;
+    private final UserService userService;
 
     @Override
-    public Optional<User> registerUser(RegistrationRequest request) {
-        Plan plan = planRepository.findById(FREE_PLAN_ID)
-                .orElseThrow(() -> new NotFoundException(PLAN_NOT_FOUND));
+    public UserResponse registerUser(RegistrationRequest request) {
+        Plan plan = planService.getPlan(FREE_PLAN_ID);
         Subscription subscription = new Subscription();
         subscription.setPlan(plan);
         subscription.setIssuedDate(LocalDate.now());
@@ -52,9 +45,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         subscription.setIsActive(true);
         List<Authority> authorities = DEFAULT_AUTHORITIES_IDS
                 .stream()
-                .map(l -> authorityRepository
-                        .findById(l)
-                        .orElseThrow(() -> new NotFoundException(AUTHORITY_NOT_FOUND)))
+                .map(authorityService::getAuthority)
                 .collect(Collectors.toList());
         User user = new User();
         user.setSubscription(subscription);
@@ -62,7 +53,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
-        user.setUsedSpace(DEFAULT_USED_SPACE);
-        return Optional.of(userRepository.save(user));
+        user.setUsedSpace(0L);
+        return userService.userToResponse(userService.saveUser(user));
     }
 }

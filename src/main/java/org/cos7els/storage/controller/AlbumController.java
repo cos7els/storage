@@ -64,16 +64,16 @@ public class AlbumController {
         return new ResponseEntity<>(albumService.albumToResponse(album), HttpStatus.CREATED);
     }
 
-    @PutMapping("/album/{id}")
-    public ResponseEntity<AlbumResponse> updateAlbum(
-            @PathVariable Long id,
-            @RequestBody UpdateAlbumRequest request,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        Album album = albumService.updateAlbum(id, request, userDetails.getId())
-                .orElseThrow(() -> new CustomException(UPDATE_ALBUM_EXCEPTION));
-        return new ResponseEntity<>(albumService.albumToResponse(album), HttpStatus.OK);
-    }
+//    @PutMapping("/album/{id}")
+//    public ResponseEntity<AlbumResponse> updateAlbum(
+//            @PathVariable Long id,
+//            @RequestBody UpdateAlbumRequest request,
+//            @AuthenticationPrincipal UserDetailsImpl userDetails
+//    ) {
+//        Album album = albumService.updateAlbum(id, request, userDetails.getId())
+//                .orElseThrow(() -> new CustomException(UPDATE_ALBUM_EXCEPTION));
+//        return new ResponseEntity<>(albumService.albumToResponse(album), HttpStatus.OK);
+//    }
 
     @DeleteMapping("/album/{id}")
     public ResponseEntity<HttpStatus> deleteAlbum(

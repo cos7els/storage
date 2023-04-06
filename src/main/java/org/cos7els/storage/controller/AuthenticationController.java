@@ -23,9 +23,9 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest authenticationRequest
     ) {
-        Optional<AuthenticationResponse> authenticationResponse = authenticationService.authenticate(authenticationRequest);
-        return authenticationResponse.isPresent() ?
-                new ResponseEntity<>(authenticationResponse.get(), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(
+                authenticationService.authenticate(authenticationRequest),
+                HttpStatus.OK
+        );
     }
 }

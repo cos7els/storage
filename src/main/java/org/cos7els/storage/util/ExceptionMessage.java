@@ -1,6 +1,8 @@
 package org.cos7els.storage.util;
 
 public interface ExceptionMessage {
+    final String NOT_FOUND = "The requested URL was not found on this server";
+    String OBJECT_NOT_FOUND = "Object not found";
     String USERS_NOT_FOUND = "Users not found";
     String USER_NOT_FOUND = "User not found";
     String CREATE_USER_EXCEPTION = "Create user exception";
@@ -15,14 +17,12 @@ public interface ExceptionMessage {
 
     String AUTHORITIES_NOT_FOUND = "Authorities not found";
     String AUTHORITY_NOT_FOUND = "Authority not found";
-    String CREATE_AUTHORITY_EXCEPTION = "Create user exception";
-    String UPDATE_AUTHORITY_EXCEPTION = "Create user exception";
+    String INSERT_AUTHORITY_EXCEPTION = "Insert authority exception";
     String DELETE_AUTHORITY_EXCEPTION = "Delete user exception";
 
     String PLANS_NOT_FOUND = "Plans not found";
     String PLAN_NOT_FOUND = "Plan not found";
-    String CREATE_PLAN_EXCEPTION = "Create plan exception";
-    String UPDATE_PLAN_EXCEPTION = "Update plan exception";
+    String INSERT_PLAN_EXCEPTION = "Insert plan exception";
     String DELETE_PLAN_EXCEPTION = "Delete plan exception";
 
     String SUBSCRIPTION_NOT_FOUND = "Subscription not found";
@@ -31,8 +31,10 @@ public interface ExceptionMessage {
     String UPDATE_SUBSCRIPTION_EXCEPTION = "Create subscription exception";
     String DELETE_SUBSCRIPTION_EXCEPTION = "Delete subscription exception";
 
-    String PHOTO_NOT_FOUND = "Photo not found";
     String PHOTOS_NOT_FOUND = "Photos not found";
+    String PHOTO_NOT_FOUND = "Photo not found";
+    String INSERT_PHOTO_EXCEPTION = "Insert photo exception";
+    String DELETE_PHOTO_EXCEPTION = "Delete photo exception";
 
     String REGISTER_EXCEPTION = "Register user exception";
     String CHANGE_PASSWORD_EXCEPTION = "Change password exception";

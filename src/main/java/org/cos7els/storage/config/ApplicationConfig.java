@@ -2,7 +2,6 @@ package org.cos7els.storage.config;
 
 import io.github.rctcwyvrn.blake3.Blake3;
 import io.minio.MinioClient;
-import org.bouncycastle.crypto.digests.Blake3Digest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories(basePackages = "org.cos7els.storage.repository")
 @EnableAspectJAutoProxy
-@PropertySource("classpath:minio.properties")
+@PropertySource("classpath:storage.properties")
 public class ApplicationConfig {
     @Value("${endpoint}")
     private String minioEndpoint;
@@ -34,5 +33,4 @@ public class ApplicationConfig {
     public Blake3 blake3 () {
         return Blake3.newInstance();
     }
-
 }

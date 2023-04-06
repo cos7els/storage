@@ -6,9 +6,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,7 +54,7 @@ public class JwtService {
         try {
             Claims claims = extractAllClaims(token);
             return userDetailsService.isUserExists(claims.getSubject());
-        } catch (ExpiredJwtException | MalformedJwtException | SignatureException e) {
+        } catch (ExpiredJwtException | MalformedJwtException | SignatureException | DecodingException e) {
             return false;
         }
     }

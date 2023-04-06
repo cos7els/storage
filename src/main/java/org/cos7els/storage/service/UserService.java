@@ -6,27 +6,24 @@ import org.cos7els.storage.model.request.ChangePasswordRequest;
 import org.cos7els.storage.model.response.UserResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
+    UserResponse getUserResponse(Long id);
+    User getUser(Long id);
 
-    Optional<User> getUserByUsername(String username);
+    List<User> getAllUsers();
 
-    Optional<User> getUser(Long id);
+    User saveUser(User user);
 
-    Optional<List<User>> getAllUsers();
+    void deleteUser(Long id);
 
-    Optional<User> saveUser(User user);
+    UserResponse changePassword(ChangePasswordRequest request, Long id);
 
-    Integer deleteUser(Long id);
+    UserResponse changeEmail(ChangeEmailRequest request, Long id);
 
-    boolean isUserExists(Long id);
-
-    Optional<User> changePassword(ChangePasswordRequest request, Long id);
-
-    Optional<User> changeEmail(ChangeEmailRequest request, Long id);
-
-    UserResponse userToResponse(User user);
+    void updateUsedSpace(Long id, Long size);
 
     List<UserResponse> usersToResponses(List<User> users);
+
+    UserResponse userToResponse(User user);
 }

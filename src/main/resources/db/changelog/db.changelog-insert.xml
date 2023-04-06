@@ -7,28 +7,28 @@
         <insert tableName="plans">
             <column name="id" value="1"/>
             <column name="title" value="FREE"/>
-            <column name="available_space" value="5000"/>
+            <column name="available_space" value="10000000000"/>
             <column name="monthly_price" value="0"/>
             <column name="yearly_price" value="0"/>
         </insert>
         <insert tableName="plans">
             <column name="id" value="2"/>
             <column name="title" value="20GB"/>
-            <column name="available_space" value="20000"/>
+            <column name="available_space" value="20000000000"/>
             <column name="monthly_price" value="1.99"/>
             <column name="yearly_price" value="19.99"/>
         </insert>
         <insert tableName="plans">
             <column name="id" value="3"/>
             <column name="title" value="50GB"/>
-            <column name="available_space" value="50000"/>
+            <column name="available_space" value="50000000000"/>
             <column name="monthly_price" value="3.99"/>
             <column name="yearly_price" value="39.99"/>
         </insert>
         <insert tableName="plans">
             <column name="id" value="4"/>
             <column name="title" value="100GB"/>
-            <column name="available_space" value="100000"/>
+            <column name="available_space" value="100000000000"/>
             <column name="monthly_price" value="5.99"/>
             <column name="yearly_price" value="59.99"/>
         </insert>
@@ -38,10 +38,10 @@
             <column name="expired_date" value="2050-01-01"/>
         </insert>
         <insert tableName="authorities">
-            <column name="name" value="ROLE_ADMIN"/>
+            <column name="name" value="ADMIN"/>
         </insert>
         <insert tableName="authorities">
-            <column name="name" value="ROLE_USER"/>
+            <column name="name" value="USER"/>
         </insert>
         <insert tableName="authorities">
             <column name="name" value="UPLOAD"/>

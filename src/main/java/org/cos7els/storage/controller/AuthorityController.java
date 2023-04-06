@@ -1,8 +1,6 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.CustomException;
-import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.Authority;
 import org.cos7els.storage.service.AuthorityService;
 import org.springframework.http.HttpStatus;
@@ -17,12 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.AUTHORITIES_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.AUTHORITY_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.CREATE_AUTHORITY_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.UPDATE_AUTHORITY_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.DELETE_AUTHORITY_EXCEPTION;
-
 @RestController
 @RequiredArgsConstructor
 public class AuthorityController {
@@ -30,38 +22,47 @@ public class AuthorityController {
 
     @GetMapping("/admin/authorities")
     public ResponseEntity<List<Authority>> getAllAuthorities() {
-        List<Authority> authorities = authorityService.getAllAuthorities()
-                .orElseThrow(() -> new NotFoundException(AUTHORITIES_NOT_FOUND));
-        return new ResponseEntity<>(authorities, HttpStatus.OK);
+        return new ResponseEntity<>(
+                authorityService.getAllAuthorities(),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/admin/authority/{id}")
-    public ResponseEntity<Authority> getAuthority(@PathVariable Long id) {
-        Authority authority = authorityService.getAuthority(id)
-                .orElseThrow(() -> new NotFoundException(AUTHORITY_NOT_FOUND));
-        return new ResponseEntity<>(authority, HttpStatus.OK);
+    public ResponseEntity<Authority> getAuthority(
+            @PathVariable Long id
+    ) {
+        return new ResponseEntity<>(
+                authorityService.getAuthority(id),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/admin/authority")
-    public ResponseEntity<Authority> createAuthority(@RequestBody Authority request) {
-        Authority authority = authorityService.saveAuthority(request)
-                .orElseThrow(() -> new CustomException(CREATE_AUTHORITY_EXCEPTION));
-        return new ResponseEntity<>(authority, HttpStatus.CREATED);
+    public ResponseEntity<Authority> createAuthority(
+            @RequestBody Authority authority
+    ) {
+        return new ResponseEntity<>(
+                authorityService.saveAuthority(authority),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping("/admin/authority")
-    public ResponseEntity<Authority> updateAuthority(@RequestBody Authority request) {
-        Authority authority = authorityService.saveAuthority(request)
-                .orElseThrow(() -> new CustomException(UPDATE_AUTHORITY_EXCEPTION));
-        return new ResponseEntity<>(authority, HttpStatus.OK);
+    public ResponseEntity<Authority> updateAuthority(
+            @RequestBody Authority authority
+    ) {
+        return new ResponseEntity<>(
+                authorityService.saveAuthority(authority),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/admin/authority/{id}")
-    public ResponseEntity<HttpStatus> deleteAuthority(@PathVariable Long id) {
-        Integer result = authorityService.deleteAuthority(id);
-        if (result == 0) {
-            throw new CustomException(DELETE_AUTHORITY_EXCEPTION);
-        }
+    public ResponseEntity<HttpStatus> deleteAuthority(
+            @PathVariable Long id
+    ) {
+        authorityService.deleteAuthority(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
