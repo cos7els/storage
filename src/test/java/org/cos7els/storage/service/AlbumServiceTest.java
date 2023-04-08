@@ -1,6 +1,6 @@
 //package org.cos7els.storage.service;
 //
-//import org.cos7els.storage.model.Album;
+//import org.cos7els.storage.model.domain.Album;
 //import org.cos7els.storage.repository.AlbumRepository;
 //import org.cos7els.storage.service.impl.AlbumServiceImpl;
 //import org.junit.jupiter.api.Test;

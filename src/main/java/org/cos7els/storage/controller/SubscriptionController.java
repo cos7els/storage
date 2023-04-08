@@ -1,11 +1,9 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.exception.InternalException;
-import org.cos7els.storage.exception.NotFoundException;
-import org.cos7els.storage.model.Subscription;
+import org.cos7els.storage.model.domain.Subscription;
 import org.cos7els.storage.model.response.SubscriptionResponse;
-import org.cos7els.storage.security.UserDetailsImpl;
+import org.cos7els.storage.security.model.UserDetailsImpl;
 import org.cos7els.storage.service.SubscriptionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,63 +18,44 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.CREATE_SUBSCRIPTION_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.DELETE_SUBSCRIPTION_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.SUBSCRIPTIONS_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.SUBSCRIPTION_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.UPDATE_SUBSCRIPTION_EXCEPTION;
-
 @RestController
 @RequiredArgsConstructor
 public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     @GetMapping("/subscription")
-    public ResponseEntity<SubscriptionResponse> getSubscription(
+    public ResponseEntity<SubscriptionResponse> getCurrentSubscription(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        Subscription subscription = subscriptionService.getSubscription(userDetails.getId())
-                .orElseThrow(() -> new NotFoundException(SUBSCRIPTION_NOT_FOUND));
         return new ResponseEntity<>(
-                subscriptionService.subscriptionToResponse(subscription),
+                subscriptionService.getCurrentSubscription(userDetails.getId()),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("/admin/subscriptions")
     public ResponseEntity<List<Subscription>> getAllSubscriptions() {
-        List<Subscription> subscriptions = subscriptionService.getAllSubscription()
-                .orElseThrow(() -> new NotFoundException(SUBSCRIPTIONS_NOT_FOUND));
-        return new ResponseEntity<>(subscriptions, HttpStatus.OK);
+        return new ResponseEntity<>(subscriptionService.getSubscriptions(), HttpStatus.OK);
     }
 
-    @GetMapping("/admin/subscription/{id}")
-    public ResponseEntity<Subscription> getSubscription(@PathVariable Long id) {
-        Subscription subscription = subscriptionService.getSubscription(id)
-                .orElseThrow(() -> new NotFoundException(SUBSCRIPTION_NOT_FOUND));
-        return new ResponseEntity<>(subscription, HttpStatus.OK);
+    @GetMapping("/admin/subscription/{subscriptionId}")
+    public ResponseEntity<Subscription> getCurrentSubscription(@PathVariable Long subscriptionId) {
+        return new ResponseEntity<>(subscriptionService.selectSubscription(subscriptionId), HttpStatus.OK);
     }
 
     @PostMapping("/admin/subscription")
-    public ResponseEntity<Subscription> createSubscription(@RequestBody Subscription request) {
-        Subscription subscription = subscriptionService.saveSubscription(request)
-                .orElseThrow(() -> new InternalException(CREATE_SUBSCRIPTION_EXCEPTION));
-        return new ResponseEntity<>(subscription, HttpStatus.CREATED);
+    public ResponseEntity<Subscription> createSubscription(@RequestBody Subscription subscription) {
+        return new ResponseEntity<>(subscriptionService.insertSubscription(subscription), HttpStatus.CREATED);
     }
 
     @PutMapping("admin/subscription")
-    public ResponseEntity<Subscription> updateSubscription(@RequestBody Subscription request) {
-        Subscription subscription = subscriptionService.saveSubscription(request)
-                .orElseThrow(() -> new InternalException(UPDATE_SUBSCRIPTION_EXCEPTION));
-        return new ResponseEntity<>(subscription, HttpStatus.OK);
+    public ResponseEntity<Subscription> updateSubscription(@RequestBody Subscription subscription) {
+        return new ResponseEntity<>(subscriptionService.insertSubscription(subscription), HttpStatus.OK);
     }
 
-    @DeleteMapping("/admin/subscription/{id}")
-    public ResponseEntity<HttpStatus> deleteSubscription(@PathVariable Long id) {
-        Integer result = subscriptionService.deleteSubscription(id);
-        if (result == 0) {
-            throw new InternalException(DELETE_SUBSCRIPTION_EXCEPTION);
-        }
+    @DeleteMapping("/admin/subscription/{subscriptionId}")
+    public ResponseEntity<HttpStatus> deleteSubscription(@PathVariable Long subscriptionId) {
+        subscriptionService.deleteSubscription(subscriptionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

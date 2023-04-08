@@ -1,8 +1,7 @@
 package org.cos7els.storage.repository;
 
-import org.cos7els.storage.model.Plan;
+import org.cos7els.storage.model.domain.Plan;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;

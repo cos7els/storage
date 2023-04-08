@@ -1,10 +1,9 @@
 package org.cos7els.storage.service;
 
-import org.cos7els.storage.model.Photo;
+import org.cos7els.storage.model.domain.Photo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface StorageService {
     String putPhoto(MultipartFile file, Long userId);

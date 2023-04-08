@@ -3,7 +3,7 @@ package org.cos7els.storage.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
-import org.cos7els.storage.model.Authority;
+import org.cos7els.storage.model.domain.Authority;
 import org.cos7els.storage.repository.AuthorityRepository;
 import org.cos7els.storage.service.AuthorityService;
 import org.springframework.stereotype.Service;

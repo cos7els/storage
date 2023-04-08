@@ -14,11 +14,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableAspectJAutoProxy
 @PropertySource("classpath:storage.properties")
 public class ApplicationConfig {
-    @Value("${endpoint}")
+    @Value("${STORAGE_ENDPOINT}")
     private String minioEndpoint;
-    @Value("${access-key}")
+    @Value("${STORAGE_ACCESS_KEY}")
     private String minioAccessKey;
-    @Value("${secret-key}")
+    @Value("${STORAGE_SECRET_KEY}")
     private String minioSecretKey;
 
     @Bean

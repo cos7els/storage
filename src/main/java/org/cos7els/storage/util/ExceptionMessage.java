@@ -25,9 +25,7 @@ public interface ExceptionMessage {
     String DELETE_PLAN_EXCEPTION = "Delete plan exception";
 
     String SUBSCRIPTION_NOT_FOUND = "Subscription not found";
-    String SUBSCRIPTIONS_NOT_FOUND = "Subscriptions not found";
-    String CREATE_SUBSCRIPTION_EXCEPTION = "Create subscription exception";
-    String UPDATE_SUBSCRIPTION_EXCEPTION = "Create subscription exception";
+    String INSERT_SUBSCRIPTION_EXCEPTION = "Create subscription exception";
     String DELETE_SUBSCRIPTION_EXCEPTION = "Delete subscription exception";
 
     String PHOTOS_NOT_FOUND = "Photos not found";

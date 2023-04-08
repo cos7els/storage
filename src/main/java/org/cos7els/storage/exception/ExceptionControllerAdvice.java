@@ -83,6 +83,7 @@ public class ExceptionControllerAdvice {
                 LocalDateTime.now(),
                 exception.getMessage()
         );
+        exception.printStackTrace();
         return new ResponseEntity<>(details, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

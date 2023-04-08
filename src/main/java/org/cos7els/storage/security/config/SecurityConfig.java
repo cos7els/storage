@@ -1,5 +1,7 @@
-package org.cos7els.storage.security;
+package org.cos7els.storage.security.config;
 
+import org.cos7els.storage.security.service.UserDetailsServiceImpl;
+import org.cos7els.storage.security.filter.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,7 +52,7 @@ public class SecurityConfig {
                 .httpBasic()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/authentication", "/registration", "/photo/download")
+                .antMatchers("/login", "/signup")
                 .permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest()

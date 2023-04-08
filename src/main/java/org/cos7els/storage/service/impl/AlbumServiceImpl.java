@@ -5,8 +5,8 @@ import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NoContentException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.mapper.AlbumToAlbumResponseMapper;
-import org.cos7els.storage.model.Album;
-import org.cos7els.storage.model.Photo;
+import org.cos7els.storage.model.domain.Album;
+import org.cos7els.storage.model.domain.Photo;
 import org.cos7els.storage.model.request.CreateUpdateAlbumRequest;
 import org.cos7els.storage.model.response.AlbumResponse;
 import org.cos7els.storage.repository.AlbumRepository;
@@ -41,7 +41,7 @@ public class AlbumServiceImpl implements AlbumService {
 
     public byte[] downloadAlbum(Long albumId, Long userId) {
         List<Photo> photos = selectAlbum(albumId, userId).getPhotos();
-        return photoService.dowloadPhotos(photos);
+        return photoService.downloadPhotos(photos);
     }
 
     public AlbumResponse createAlbum(CreateUpdateAlbumRequest createUpdateAlbumRequest, Long userId) {

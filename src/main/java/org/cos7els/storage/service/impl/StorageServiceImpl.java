@@ -2,7 +2,6 @@ package org.cos7els.storage.service.impl;
 
 import io.github.rctcwyvrn.blake3.Blake3;
 import io.minio.GetObjectArgs;
-import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
@@ -11,9 +10,8 @@ import io.minio.messages.DeleteObject;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.cos7els.storage.exception.NotFoundException;
-import org.cos7els.storage.model.Photo;
-import org.cos7els.storage.model.User;
-import org.cos7els.storage.repository.UserRepository;
+import org.cos7els.storage.model.domain.Photo;
+import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.service.StorageService;
 import org.cos7els.storage.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,31 +32,29 @@ import static org.cos7els.storage.util.ExceptionMessage.OBJECT_NOT_FOUND;
 @RequiredArgsConstructor
 @PropertySource("classpath:storage.properties")
 public class StorageServiceImpl implements StorageService {
-    @Value("${photo-bucket}")
-    private String photoBucket;
-    @Value("${thumbnail-bucket}")
-    private String thumbnailBucket;
+    @Value("${STORAGE_PHOTO_BUCKET}")
+    private String photosBucket;
+    @Value("${STORAGE_THUMBNAILS_BUCKET}")
+    private String thumbnailsBucket;
     private final UserService userService;
     private final MinioClient minioClient;
-    private final Blake3 blake3;
 
     public String putPhoto(MultipartFile file, Long userId) {
         User user = userService.getUser(userId);
-        String filename = file.getOriginalFilename();
-        String path = generatePath(user.getUsername(), filename);
+        String path = hash(user.getUsername(), file);
         String contentType = file.getContentType();
         InputStream thumbnail = generateThumbnail(file);
-        putObject(photoBucket, path, file, contentType);
-        putObject(thumbnailBucket, path, thumbnail, contentType);
+        putObject(photosBucket, path, file, contentType);
+        putObject(thumbnailsBucket, path, thumbnail, contentType);
         return path;
     }
 
     public byte[] getPhoto(Photo photo) {
-        return getObject(photoBucket, photo);
+        return getObject(photosBucket, photo);
     }
 
     public byte[] getThumbnail(Photo photo) {
-        return getObject(thumbnailBucket, photo);
+        return getObject(thumbnailsBucket, photo);
     }
 
     private void putObject(
@@ -112,13 +108,13 @@ public class StorageServiceImpl implements StorageService {
     }
 
     public void removePhoto(Photo photo) {
-        removeObject(photoBucket, photo);
-        removeObject(thumbnailBucket, photo);
+        removeObject(photosBucket, photo);
+        removeObject(thumbnailsBucket, photo);
     }
 
     public void removePhotos(List<Photo> photos) {
-        removeObjects(photoBucket, photos);
-        removeObjects(thumbnailBucket, photos);
+        removeObjects(photosBucket, photos);
+        removeObjects(thumbnailsBucket, photos);
     }
 
     private void removeObject(String bucketName, Photo photo) {
@@ -150,22 +146,28 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
-    private String generatePath(String username, String filename) {
-        blake3.update(filename.getBytes());
+    private String hash(String username, MultipartFile file) {
+        Blake3 blake3 = Blake3.newInstance();
+//        String filename = file.getOriginalFilename();
+        try {
+            blake3.update(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String hash = blake3.hexdigest();
         return String.format(
-                "%s/%s/%s.%s",
+                "%s/%s/%s",
                 username,
                 hash.substring(0, 2),
-                hash.substring(2),
-                filename.substring(filename.lastIndexOf('.'))
+                hash.substring(2)
+//                filename.substring(filename.lastIndexOf('.'))
         );
     }
 
     private InputStream generateThumbnail(MultipartFile file) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (InputStream in = file.getInputStream()) {
-            Thumbnailator.createThumbnail(in, byteArrayOutputStream, 300, 300);
+        try (InputStream inputStream = file.getInputStream()) {
+            Thumbnailator.createThumbnail(inputStream, byteArrayOutputStream, 300, 300);
         } catch (Exception e) {
             e.printStackTrace();
         }

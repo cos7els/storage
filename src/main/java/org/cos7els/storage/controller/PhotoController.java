@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.model.request.SelectPhotoRequest;
 import org.cos7els.storage.model.response.PhotoResponse;
 import org.cos7els.storage.model.response.ThumbnailResponse;
-import org.cos7els.storage.security.UserDetailsImpl;
+import org.cos7els.storage.security.model.UserDetailsImpl;
 import org.cos7els.storage.service.PhotoService;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -12,13 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -29,11 +23,11 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @GetMapping("/photos")
-    public ResponseEntity<List<ThumbnailResponse>> getPhotos(
+    public ResponseEntity<List<ThumbnailResponse>> getThumbnails(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return new ResponseEntity<>(
-                photoService.getPhotos(userDetails.getId()),
+                photoService.getThumbnails(userDetails.getId()),
                 HttpStatus.OK
         );
     }
@@ -52,9 +46,9 @@ public class PhotoController {
             @RequestBody SelectPhotoRequest selectPhotoRequest,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-//        if (selectPhotoRequest.getIds().size() == 1) {
-//            return downloadPhoto(selectPhotoRequest.getIds().get(0), userDetails);
-//        }
+        if (selectPhotoRequest.getIds().size() == 1) {
+            return downloadPhoto(selectPhotoRequest.getIds().get(0), userDetails);
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/zip"));
         headers.setContentDisposition(ContentDisposition.parse("attachment; filename=photos.zip"));
@@ -79,11 +73,11 @@ public class PhotoController {
 
     @PostMapping("/photos/upload")
     public ResponseEntity<HttpStatus> uploadPhotos(
-            @RequestPart("files") MultipartFile[] files,
+            @RequestPart("files") List<MultipartFile> files,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         photoService.uploadPhoto(files, userDetails.getId());
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/photo")

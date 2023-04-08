@@ -1,4 +1,4 @@
-package org.cos7els.storage.model;
+package org.cos7els.storage.model.domain;
 
 import lombok.Data;
 

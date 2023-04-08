@@ -1,11 +1,11 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.model.User;
+import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.model.request.ChangeEmailRequest;
 import org.cos7els.storage.model.request.ChangePasswordRequest;
 import org.cos7els.storage.model.response.UserResponse;
-import org.cos7els.storage.security.UserDetailsImpl;
+import org.cos7els.storage.security.model.UserDetailsImpl;
 import org.cos7els.storage.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

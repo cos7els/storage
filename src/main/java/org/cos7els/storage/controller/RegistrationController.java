@@ -15,13 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RegistrationController {
     private final RegistrationService registrationService;
 
-    @PostMapping("/registration")
-    public ResponseEntity<UserResponse> register(
-            @RequestBody RegistrationRequest request
-    ) {
-        return new ResponseEntity<>(
-                registrationService.registerUser(request),
-                HttpStatus.CREATED
-        );
+    @PostMapping("/signup")
+    public ResponseEntity<UserResponse> registerUser(@RequestBody RegistrationRequest registrationRequest) {
+        return new ResponseEntity<>(registrationService.registerUser(registrationRequest), HttpStatus.CREATED);
     }
 }

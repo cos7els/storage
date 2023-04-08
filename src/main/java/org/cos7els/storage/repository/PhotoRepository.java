@@ -1,6 +1,6 @@
 package org.cos7els.storage.repository;
 
-import org.cos7els.storage.model.Photo;
+import org.cos7els.storage.model.domain.Photo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,17 +16,18 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
 //    Optional<Photo> getPhotoByIdAndUserId(Long photoId, Long userId);
 
-    @Query(value = "SELECT * FROM photos WHERE user_id = :userId",
-            nativeQuery = true)
     List<Photo> findPhotosByUserIdOrderByCreationDate(Long userId);
 
-    @Query(value = "SELECT * FROM photos WHERE id = :photoId AND user_id = :userId",
-            nativeQuery = true)
+//    @Query(value = "SELECT * FROM photos WHERE id = :photoId AND user_id = :userId",
+//            nativeQuery = true)
     Optional<Photo> getPhotoByIdAndUserId(Long photoId, Long userId);
 
     @Query(value = "SELECT * FROM photos WHERE id IN :ids",
             nativeQuery = true)
     List<Photo> getPhotosByIds(List<Long> ids);
+
+    boolean existsPhotoByPath(String path);
+    boolean existsPhotoByFileName(String fileName);
 
     @Modifying
     @Query(value = "DELETE FROM albums_photos WHERE photo_id IN :ids ;" +

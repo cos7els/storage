@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.aspect.NoLogging;
 import org.cos7els.storage.model.request.AuthenticationRequest;
 import org.cos7els.storage.model.response.AuthenticationResponse;
-import org.cos7els.storage.security.JwtService;
+import org.cos7els.storage.security.service.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;

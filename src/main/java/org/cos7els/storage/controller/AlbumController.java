@@ -3,7 +3,7 @@ package org.cos7els.storage.controller;
 import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.model.request.CreateUpdateAlbumRequest;
 import org.cos7els.storage.model.response.AlbumResponse;
-import org.cos7els.storage.security.UserDetailsImpl;
+import org.cos7els.storage.security.model.UserDetailsImpl;
 import org.cos7els.storage.service.AlbumService;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AlbumController {
     private final AlbumService albumService;
-    private final PhotoController photoController;
 
     @GetMapping("/albums")
     public ResponseEntity<List<AlbumResponse>> getAlbums(

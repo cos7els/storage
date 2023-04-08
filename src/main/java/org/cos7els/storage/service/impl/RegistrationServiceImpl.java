@@ -1,10 +1,10 @@
 package org.cos7els.storage.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.model.Plan;
-import org.cos7els.storage.model.Authority;
-import org.cos7els.storage.model.Subscription;
-import org.cos7els.storage.model.User;
+import org.cos7els.storage.model.domain.Plan;
+import org.cos7els.storage.model.domain.Authority;
+import org.cos7els.storage.model.domain.Subscription;
+import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.model.request.RegistrationRequest;
 import org.cos7els.storage.model.response.UserResponse;
 import org.cos7els.storage.service.AuthorityService;
@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 public class RegistrationServiceImpl implements RegistrationService {
     @Value("${FREE_PLAN_ID}")
     private Long FREE_PLAN_ID;
-    @Value("#{'${DEFAULT_AUTHORITIES_IDS}'.split(',')}")
-    private List<Long> DEFAULT_AUTHORITIES_IDS;
+    @Value("${USER_DEFAULT_AUTHORITIES_IDS}")
+    private List<Long> USER_DEFAULT_AUTHORITIES_IDS;
+    @Value("#{'${ADMIN_DEFAULT_AUTHORITIES_IDS}'.split(',')}")
+    private List<Long> ADMIN_DEFAULT_AUTHORITIES_IDS;
     @Value("${FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE}")
     private String FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE;
     private final AuthorityService authorityService;
@@ -43,7 +45,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         subscription.setIssuedDate(LocalDate.now());
         subscription.setExpiredDate(LocalDate.parse(FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE));
         subscription.setIsActive(true);
-        List<Authority> authorities = DEFAULT_AUTHORITIES_IDS
+        List<Authority> authorities = USER_DEFAULT_AUTHORITIES_IDS
                 .stream()
                 .map(authorityService::getAuthority)
                 .collect(Collectors.toList());

@@ -1,6 +1,6 @@
 //package org.cos7els.storage.service;
 //
-//import org.cos7els.storage.model.User;
+//import org.cos7els.storage.model.domain.User;
 //import org.cos7els.storage.repository.UserRepository;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

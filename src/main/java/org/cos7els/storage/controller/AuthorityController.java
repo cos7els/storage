@@ -1,7 +1,7 @@
 package org.cos7els.storage.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.model.Authority;
+import org.cos7els.storage.model.domain.Authority;
 import org.cos7els.storage.service.AuthorityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +21,19 @@ public class AuthorityController {
     private final AuthorityService authorityService;
 
     @GetMapping("/admin/authorities")
-    public ResponseEntity<List<Authority>> getAllAuthorities() {
+    public ResponseEntity<List<Authority>> getAuthorities() {
         return new ResponseEntity<>(
                 authorityService.getAllAuthorities(),
                 HttpStatus.OK
         );
     }
 
-    @GetMapping("/admin/authority/{id}")
+    @GetMapping("/admin/authority/{authorityId}")
     public ResponseEntity<Authority> getAuthority(
-            @PathVariable Long id
+            @PathVariable Long authorityId
     ) {
         return new ResponseEntity<>(
-                authorityService.getAuthority(id),
+                authorityService.getAuthority(authorityId),
                 HttpStatus.OK
         );
     }
@@ -58,11 +58,11 @@ public class AuthorityController {
         );
     }
 
-    @DeleteMapping("/admin/authority/{id}")
+    @DeleteMapping("/admin/authority/{authorityId}")
     public ResponseEntity<HttpStatus> deleteAuthority(
-            @PathVariable Long id
+            @PathVariable Long authorityId
     ) {
-        authorityService.deleteAuthority(id);
+        authorityService.deleteAuthority(authorityId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

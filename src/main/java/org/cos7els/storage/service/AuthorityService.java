@@ -1,6 +1,6 @@
 package org.cos7els.storage.service;
 
-import org.cos7els.storage.model.Authority;
+import org.cos7els.storage.model.domain.Authority;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 //package org.cos7els.storage.service;
 //
-//import org.cos7els.storage.model.Plan;
+//import org.cos7els.storage.model.domain.Plan;
 //import org.cos7els.storage.repository.PlanRepository;
 //import org.cos7els.storage.service.impl.PlanService;
 //import org.junit.jupiter.api.Test;

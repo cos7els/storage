@@ -1,6 +1,6 @@
 package org.cos7els.storage.service;
 
-import org.cos7els.storage.model.User;
+import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.model.request.ChangeEmailRequest;
 import org.cos7els.storage.model.request.ChangePasswordRequest;
 import org.cos7els.storage.model.response.UserResponse;

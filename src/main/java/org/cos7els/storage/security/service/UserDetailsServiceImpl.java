@@ -1,9 +1,9 @@
-package org.cos7els.storage.security;
+package org.cos7els.storage.security.service;
 
 import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.model.User;
+import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.repository.UserRepository;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.cos7els.storage.security.model.UserDetailsImpl;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

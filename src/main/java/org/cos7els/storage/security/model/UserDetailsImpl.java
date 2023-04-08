@@ -1,4 +1,4 @@
-package org.cos7els.storage.security;
+package org.cos7els.storage.security.model;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

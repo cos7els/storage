@@ -1,6 +1,6 @@
 package org.cos7els.storage.repository;
 
-import org.cos7els.storage.model.Authority;
+import org.cos7els.storage.model.domain.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

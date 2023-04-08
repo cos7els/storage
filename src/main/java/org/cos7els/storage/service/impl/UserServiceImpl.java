@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.BadDataException;
 import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NoContentException;
-import org.cos7els.storage.model.User;
+import org.cos7els.storage.mapper.SubscriptionToSubscriptionResponseMapper;
+import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.model.request.ChangeEmailRequest;
 import org.cos7els.storage.model.request.ChangePasswordRequest;
 import org.cos7els.storage.model.response.UserResponse;
 import org.cos7els.storage.repository.UserRepository;
-import org.cos7els.storage.service.SubscriptionService;
 import org.cos7els.storage.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,10 +24,9 @@ import static org.cos7els.storage.util.ExceptionMessage.INSERT_USER_EXCEPTION;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    private final UserRepository userRepository;
+    private final SubscriptionToSubscriptionResponseMapper subscriptionToSubscriptionResponseMapper;
     private final PasswordEncoder passwordEncoder;
-    private final SubscriptionService subscriptionService;
+    private final UserRepository userRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 user.getUsername(),
                 user.getEmail(),
                 user.getUsedSpace(),
-                subscriptionService.subscriptionToResponse(user.getSubscription())
+                subscriptionToSubscriptionResponseMapper.subscriptionToResponse(user.getSubscription())
         );
     }
 

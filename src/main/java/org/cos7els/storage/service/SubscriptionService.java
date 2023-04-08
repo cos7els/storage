@@ -1,19 +1,18 @@
 package org.cos7els.storage.service;
 
-import org.cos7els.storage.model.Subscription;
+import org.cos7els.storage.model.domain.Subscription;
 import org.cos7els.storage.model.response.SubscriptionResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface SubscriptionService {
-    Optional<Subscription> getSubscription(Long id);
+    SubscriptionResponse getCurrentSubscription(Long subscriptionId);
 
-    Optional<List<Subscription>> getAllSubscription();
+    List<Subscription> getSubscriptions();
 
-    Optional<Subscription> saveSubscription(Subscription subscription);
+    Subscription selectSubscription(Long subscriptionId);
 
-    Integer deleteSubscription(Long id);
+    Subscription insertSubscription(Subscription subscription);
 
-    SubscriptionResponse subscriptionToResponse(Subscription subscription);
+    void deleteSubscription(Long subscriptionId);
 }

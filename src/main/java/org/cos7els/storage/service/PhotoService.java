@@ -1,6 +1,6 @@
 package org.cos7els.storage.service;
 
-import org.cos7els.storage.model.Photo;
+import org.cos7els.storage.model.domain.Photo;
 import org.cos7els.storage.model.request.SelectPhotoRequest;
 import org.cos7els.storage.model.response.PhotoResponse;
 import org.cos7els.storage.model.response.ThumbnailResponse;
@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface PhotoService {
 
-    List<ThumbnailResponse> getPhotos(Long userId);
+    List<ThumbnailResponse> getThumbnails(Long userId);
 
     PhotoResponse getPhoto(Long photoId, Long userId);
 
-    void uploadPhoto(MultipartFile[] file, Long userId);
+    void uploadPhoto(List<MultipartFile> files, Long userId);
 
     void deletePhotos(SelectPhotoRequest request, Long userId);
 
@@ -22,17 +22,9 @@ public interface PhotoService {
 
     void deletePhotos(Long userId);
 
-    List<ThumbnailResponse> photosToThumbnails(List<Photo> photos);
-
-    ThumbnailResponse photoToThumbnail(Photo photo);
-
-    List<PhotoResponse> photosToResponses(List<Photo> photos);
-
-    PhotoResponse photoToResponse(Photo photo);
-
     byte[] downloadPhotos(SelectPhotoRequest selectPhotoRequest, Long userId);
 
-    byte[] dowloadPhotos(List<Photo> photos);
+    byte[] downloadPhotos(List<Photo> photos);
 
     List<Photo> getPhotosByIds(List<Long> photoIds, Long userId);
 }

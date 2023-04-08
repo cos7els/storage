@@ -1,7 +1,7 @@
 //package org.cos7els.storage.service;
 //
-//import org.cos7els.storage.model.Photo;
-//import org.cos7els.storage.model.User;
+//import org.cos7els.storage.model.domain.Photo;
+//import org.cos7els.storage.model.domain.User;
 //import org.cos7els.storage.repository.PhotoRepository;
 //import org.cos7els.storage.service.impl.PhotoServiceImpl;
 //import org.junit.jupiter.api.Test;

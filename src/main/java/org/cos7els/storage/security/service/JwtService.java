@@ -1,4 +1,4 @@
-package org.cos7els.storage.security;
+package org.cos7els.storage.security.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -25,9 +25,9 @@ import java.util.function.Function;
 @PropertySource("classpath:variables.properties")
 @RequiredArgsConstructor
 public class JwtService {
-    @Value("${jwt-secret-key}")
+    @Value("${JWT_SECRET_KEY}")
     private String JWT_SECRET_KEY;
-    @Value("${token-life-time}")
+    @Value("${TOKEN_LIFE_TIME}")
     private Long TOKEN_LIFE_TIME;
     private final UserDetailsServiceImpl userDetailsService;
 
