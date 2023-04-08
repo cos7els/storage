@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.SUBSCRIPTION_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.INSERT_SUBSCRIPTION_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.DELETE_SUBSCRIPTION_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +29,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     public Subscription selectSubscription(Long subscriptionId) {
-        return subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new NotFoundException(SUBSCRIPTION_NOT_FOUND));
+        return subscriptionRepository.findById(subscriptionId).orElseThrow(() -> new NotFoundException(SUBSCRIPTION_NOT_FOUND));
     }
 
     public Subscription insertSubscription(Subscription subscription) {

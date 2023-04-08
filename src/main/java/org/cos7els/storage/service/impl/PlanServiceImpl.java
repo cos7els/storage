@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.DELETE_PLAN_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.INSERT_PLAN_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.PLAN_NOT_FOUND;
+import static org.cos7els.storage.util.ExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,8 +53,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     private Plan selectPlan(Long id) {
-        return planRepository.getPlanById(id)
-                .orElseThrow(() -> new NotFoundException(PLAN_NOT_FOUND));
+        return planRepository.getPlanById(id).orElseThrow(() -> new NotFoundException(PLAN_NOT_FOUND));
     }
 
     private Plan insertPlan(Plan plan) {

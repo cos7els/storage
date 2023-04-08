@@ -12,17 +12,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PlanToPlanResponseMapper {
     public List<PlanResponse> plansToResponses(List<Plan> plans) {
-        return plans.stream()
-                .map(this::planToResponse)
-                .collect(Collectors.toList());
+        return plans.stream().map(this::planToResponse).collect(Collectors.toList());
     }
 
     public PlanResponse planToResponse(Plan plan) {
-        return new PlanResponse(
-                plan.getTitle(),
-                plan.getAvailableSpace(),
-                plan.getMonthlyPrice(),
-                plan.getYearlyPrice()
-        );
+        return new PlanResponse(plan.getTitle(), plan.getAvailableSpace(), plan.getMonthlyPrice(), plan.getYearlyPrice());
     }
 }

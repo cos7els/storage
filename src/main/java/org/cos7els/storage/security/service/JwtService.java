@@ -1,10 +1,6 @@
 package org.cos7els.storage.security.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
@@ -25,11 +21,11 @@ import java.util.function.Function;
 @PropertySource("classpath:variables.properties")
 @RequiredArgsConstructor
 public class JwtService {
-    @Value("${JWT_SECRET_KEY}")
-    private String JWT_SECRET_KEY;
-    @Value("${TOKEN_LIFE_TIME}")
-    private Long TOKEN_LIFE_TIME;
     private final UserDetailsServiceImpl userDetailsService;
+    @Value("${jwt_secret_key}")
+    private String JWT_SECRET_KEY;
+    @Value("${token_lifetime}")
+    private Long TOKEN_LIFE_TIME;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -41,12 +37,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
 
     public boolean isTokenValid(String token) {
@@ -70,18 +61,8 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails
-    ) {
-        return Jwts
-                .builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_LIFE_TIME))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + TOKEN_LIFE_TIME)).signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
     }
 
     private Key getSignInKey() {

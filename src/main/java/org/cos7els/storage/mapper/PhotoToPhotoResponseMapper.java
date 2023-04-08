@@ -19,9 +19,7 @@ public class PhotoToPhotoResponseMapper {
     public List<ThumbnailResponse> photosToThumbnails(List<Photo> photos) {
         List<ThumbnailResponse> thumbnails = new ArrayList<>();
         try {
-            thumbnails = photos.stream()
-                    .map(this::photoToThumbnail)
-                    .collect(Collectors.toList());
+            thumbnails = photos.stream().map(this::photoToThumbnail).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -29,27 +27,14 @@ public class PhotoToPhotoResponseMapper {
     }
 
     public ThumbnailResponse photoToThumbnail(Photo photo) {
-        return new ThumbnailResponse(
-                photo.getId(), storageService.getThumbnail(photo)
-        );
+        return new ThumbnailResponse(photo.getId(), storageService.getThumbnail(photo));
     }
 
     public List<PhotoResponse> photosToResponses(List<Photo> photos) {
-        return photos.stream()
-                .map(this::photoToResponse)
-                .collect(Collectors.toList());
+        return photos.stream().map(this::photoToResponse).collect(Collectors.toList());
     }
 
     public PhotoResponse photoToResponse(Photo photo) {
-        return new PhotoResponse(
-                photo.getCreationDate(),
-                photo.getFileName(),
-                photo.getContentType(),
-                String.format("%s x %s", photo.getHeight(), photo.getWidth()),
-                photo.getSize(),
-                photo.getLatitude(),
-                photo.getLongitude(),
-                storageService.getPhoto(photo)
-        );
+        return new PhotoResponse(photo.getCreationDate(), photo.getFileName(), photo.getContentType(), String.format("%s x %s", photo.getHeight(), photo.getWidth()), photo.getSize(), photo.getLatitude(), photo.getLongitude(), storageService.getPhoto(photo));
     }
 }

@@ -14,16 +14,10 @@ public class AlbumToAlbumResponseMapper {
     private final PhotoToPhotoResponseMapper photoToPhotoResponseMapper;
 
     public AlbumResponse albumToResponse(Album album) {
-        return new AlbumResponse(
-                album.getId(),
-                album.getTitle(),
-                photoToPhotoResponseMapper.photosToThumbnails(album.getPhotos())
-        );
+        return new AlbumResponse(album.getId(), album.getTitle(), photoToPhotoResponseMapper.photosToThumbnails(album.getPhotos()));
     }
 
     public List<AlbumResponse> albumsToResponses(List<Album> albums) {
-        return albums.stream()
-                .map(this::albumToResponse)
-                .collect(Collectors.toList());
+        return albums.stream().map(this::albumToResponse).collect(Collectors.toList());
     }
 }

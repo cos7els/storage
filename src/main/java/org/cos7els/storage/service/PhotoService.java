@@ -1,7 +1,7 @@
 package org.cos7els.storage.service;
 
 import org.cos7els.storage.model.domain.Photo;
-import org.cos7els.storage.model.request.SelectPhotoRequest;
+import org.cos7els.storage.model.request.SelectedPhotoRequest;
 import org.cos7els.storage.model.response.PhotoResponse;
 import org.cos7els.storage.model.response.ThumbnailResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,13 +16,13 @@ public interface PhotoService {
 
     void uploadPhoto(List<MultipartFile> files, Long userId);
 
-    void deletePhotos(SelectPhotoRequest request, Long userId);
+    void deletePhotos(SelectedPhotoRequest request, Long userId);
 
     void deletePhoto(Long photoId, Long userId);
 
     void deletePhotos(Long userId);
 
-    byte[] downloadPhotos(SelectPhotoRequest selectPhotoRequest, Long userId);
+    byte[] downloadPhotos(SelectedPhotoRequest selectedPhotoRequest, Long userId);
 
     byte[] downloadPhotos(List<Photo> photos);
 

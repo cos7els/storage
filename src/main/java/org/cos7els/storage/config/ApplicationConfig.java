@@ -1,12 +1,8 @@
 package org.cos7els.storage.config;
 
-import io.github.rctcwyvrn.blake3.Blake3;
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
@@ -14,23 +10,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableAspectJAutoProxy
 @PropertySource("classpath:storage.properties")
 public class ApplicationConfig {
-    @Value("${STORAGE_ENDPOINT}")
-    private String minioEndpoint;
-    @Value("${STORAGE_ACCESS_KEY}")
-    private String minioAccessKey;
-    @Value("${STORAGE_SECRET_KEY}")
-    private String minioSecretKey;
+    @Value("${storage_endpoint}")
+    private String endpoint;
+    @Value("${storage_access_key}")
+    private String accessKey;
+    @Value("${storage_secret_key}")
+    private String secretKey;
 
     @Bean
     public MinioClient minioClient() {
-        return MinioClient.builder()
-                .endpoint(minioEndpoint)
-                .credentials(minioAccessKey, minioSecretKey)
-                .build();
-    }
-
-    @Bean
-    public Blake3 blake3 () {
-        return Blake3.newInstance();
+        return MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build();
     }
 }

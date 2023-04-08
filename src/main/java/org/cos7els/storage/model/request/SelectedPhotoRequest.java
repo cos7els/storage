@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SelectPhotoRequest {
+public class SelectedPhotoRequest {
     private List<Long> ids;
 }

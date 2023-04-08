@@ -1,7 +1,7 @@
 package org.cos7els.storage.security.config;
 
-import org.cos7els.storage.security.service.UserDetailsServiceImpl;
 import org.cos7els.storage.security.filter.JwtAuthenticationFilter;
+import org.cos7els.storage.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,7 +46,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+        return http
                 .csrf()
                 .disable()
                 .httpBasic()
@@ -54,14 +54,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/login", "/signup")
                 .permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin/**")
+                .hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }

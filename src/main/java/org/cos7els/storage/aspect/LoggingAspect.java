@@ -19,11 +19,9 @@ public class LoggingAspect {
     public Object logsAroundMethodsExecution(@NotNull ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         String methodName = joinPoint.getSignature().toString();
-        logger.info(String.format("Start execution method: %s, with parameters: %s",
-                methodName, Arrays.toString(args)));
+        logger.info(String.format("Start execution method: %s, with parameters: %s", methodName, Arrays.toString(args)));
         Object proceed = joinPoint.proceed();
-        logger.info(String.format("End execution method: %s, with parameters: %s",
-                methodName, Arrays.toString(args)));
+        logger.info(String.format("End execution method: %s, with parameters: %s", methodName, Arrays.toString(args)));
         return proceed;
     }
 }

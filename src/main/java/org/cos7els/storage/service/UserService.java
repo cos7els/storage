@@ -24,7 +24,5 @@ public interface UserService {
 
     void updateUsedSpace(Long userId, Long size);
 
-    List<UserResponse> usersToResponses(List<User> users);
-
-    UserResponse userToResponse(User user);
+    void usedSpaceCheck(Long userId);
 }

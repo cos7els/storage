@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface StorageService {
-    String putPhoto(MultipartFile file, Long userId);
+    void putPhoto(MultipartFile file, String hashedPath);
 
     byte[] getPhoto(Photo photo);
 

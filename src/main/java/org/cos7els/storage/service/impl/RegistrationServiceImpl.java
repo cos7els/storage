@@ -1,8 +1,8 @@
 package org.cos7els.storage.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import org.cos7els.storage.model.domain.Plan;
+import org.cos7els.storage.mapper.UserToUserResponseMapper;
 import org.cos7els.storage.model.domain.Authority;
+import org.cos7els.storage.model.domain.Plan;
 import org.cos7els.storage.model.domain.Subscription;
 import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.model.request.RegistrationRequest;
@@ -11,6 +11,7 @@ import org.cos7els.storage.service.AuthorityService;
 import org.cos7els.storage.service.PlanService;
 import org.cos7els.storage.service.RegistrationService;
 import org.cos7els.storage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,41 +22,58 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @PropertySource("classpath:variables.properties")
 public class RegistrationServiceImpl implements RegistrationService {
-    @Value("${FREE_PLAN_ID}")
-    private Long FREE_PLAN_ID;
-    @Value("${USER_DEFAULT_AUTHORITIES_IDS}")
-    private List<Long> USER_DEFAULT_AUTHORITIES_IDS;
-    @Value("#{'${ADMIN_DEFAULT_AUTHORITIES_IDS}'.split(',')}")
-    private List<Long> ADMIN_DEFAULT_AUTHORITIES_IDS;
-    @Value("${FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE}")
-    private String FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE;
+    private final UserToUserResponseMapper userToUserResponseMapper;
     private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
     private final PlanService planService;
     private final UserService userService;
+    @Value("${free_plan_id}")
+    private Long freePlanId;
+    @Value("#{'${user_authorities_ids}'.split(',')}")
+    private List<Long> userAuthoritiesIds;
+    @Value("#{'${admin_authorities_ids}'.split(',')}")
+    private List<Long> adminAuthoritiesIds;
+    @Value("${free_plan_expiration}")
+    private String freePlanExpiration;
 
-    @Override
-    public UserResponse registerUser(RegistrationRequest request) {
-        Plan plan = planService.getPlan(FREE_PLAN_ID);
+    @Autowired
+    public RegistrationServiceImpl(UserToUserResponseMapper userToUserResponseMapper, AuthorityService authorityService, PasswordEncoder passwordEncoder, PlanService planService, UserService userService) {
+        this.userToUserResponseMapper = userToUserResponseMapper;
+        this.authorityService = authorityService;
+        this.passwordEncoder = passwordEncoder;
+        this.planService = planService;
+        this.userService = userService;
+    }
+
+    public UserResponse registerUser(RegistrationRequest registrationRequest) {
+        return userToUserResponseMapper.userToResponse(createUser(registrationRequest, userAuthoritiesIds));
+    }
+
+    public User registerAdmin(RegistrationRequest registrationRequest) {
+        return createUser(registrationRequest, adminAuthoritiesIds);
+    }
+
+    private User createUser(RegistrationRequest registrationRequest, List<Long> authoritiesIds) {
+        Plan plan = planService.getPlan(freePlanId);
         Subscription subscription = new Subscription();
         subscription.setPlan(plan);
         subscription.setIssuedDate(LocalDate.now());
-        subscription.setExpiredDate(LocalDate.parse(FREE_PLAN_SUBSCRIPTION_EXPIRED_DATE));
+        subscription.setExpiredDate(LocalDate.parse(freePlanExpiration));
         subscription.setIsActive(true);
-        List<Authority> authorities = USER_DEFAULT_AUTHORITIES_IDS
+        List<Authority> authorities = authoritiesIds
                 .stream()
                 .map(authorityService::getAuthority)
                 .collect(Collectors.toList());
         User user = new User();
         user.setSubscription(subscription);
         user.setAuthorities(authorities);
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
+        user.setUsername(registrationRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setEmail(registrationRequest.getEmail());
         user.setUsedSpace(0L);
-        return userService.userToResponse(userService.saveUser(user));
+        System.out.println(user);
+        return userService.saveUser(user);
     }
 }

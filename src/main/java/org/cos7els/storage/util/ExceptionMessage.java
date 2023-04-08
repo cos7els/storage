@@ -1,7 +1,8 @@
 package org.cos7els.storage.util;
 
 public interface ExceptionMessage {
-    final String NOT_FOUND = "The requested URL was not found on this server";
+    String NO_AVAILABLE_SPACE = "You're don't have available space on your storage";
+    String NOT_FOUND = "The requested URL was not found on this server";
     String OBJECT_NOT_FOUND = "Object not found";
     String USERS_NOT_FOUND = "Users not found";
     String USER_NOT_FOUND = "User not found";

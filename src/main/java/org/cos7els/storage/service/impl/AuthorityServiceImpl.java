@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.AUTHORITIES_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.AUTHORITY_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.DELETE_AUTHORITY_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.INSERT_AUTHORITY_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +38,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     private Authority selectAuthority(Long id) {
-        return authorityRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(AUTHORITY_NOT_FOUND));
+        return authorityRepository.findById(id).orElseThrow(() -> new NotFoundException(AUTHORITY_NOT_FOUND));
     }
 
     private Authority insertAuthority(Authority authority) {

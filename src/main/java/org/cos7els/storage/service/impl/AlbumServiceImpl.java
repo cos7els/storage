@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.ALBUM_NOT_FOUND;
-import static org.cos7els.storage.util.ExceptionMessage.DELETE_ALBUM_EXCEPTION;
-import static org.cos7els.storage.util.ExceptionMessage.INSERT_ALBUM_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -69,8 +67,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     private Album selectAlbum(Long albumId, Long userId) {
-        return albumRepository.findAlbumByIdAndUserId(albumId, userId)
-                .orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
+        return albumRepository.findAlbumByIdAndUserId(albumId, userId).orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
     }
 
     private Album insertAlbum(Album album) {

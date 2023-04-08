@@ -11,11 +11,6 @@ public class SubscriptionToSubscriptionResponseMapper {
     private final PlanToPlanResponseMapper planToPlanResponseMapper;
 
     public SubscriptionResponse subscriptionToResponse(Subscription subscription) {
-        return new SubscriptionResponse(
-                planToPlanResponseMapper.planToResponse(subscription.getPlan()),
-                subscription.getIssuedDate(),
-                subscription.getExpiredDate(),
-                subscription.getIsActive()
-        );
+        return new SubscriptionResponse(planToPlanResponseMapper.planToResponse(subscription.getPlan()), subscription.getIssuedDate(), subscription.getExpiredDate(), subscription.getIsActive());
     }
 }
