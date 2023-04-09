@@ -2,7 +2,6 @@ package org.cos7els.storage.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.InternalException;
-import org.cos7els.storage.exception.NoContentException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.mapper.AlbumToAlbumResponseMapper;
 import org.cos7els.storage.model.domain.Album;
@@ -27,9 +26,6 @@ public class AlbumServiceImpl implements AlbumService {
 
     public List<AlbumResponse> getAlbums(Long userId) {
         List<Album> albums = albumRepository.findAlbumsByUserId(userId);
-        if (albums.isEmpty()) {
-            throw new NoContentException();
-        }
         return albumToAlbumResponseMapper.albumsToResponses(albums);
     }
 
@@ -72,7 +68,7 @@ public class AlbumServiceImpl implements AlbumService {
 
     private Album insertAlbum(Album album) {
         Album savedAlbum = albumRepository.save(album);
-        if (album == null) {
+        if (savedAlbum == null) {
             throw new InternalException(INSERT_ALBUM_EXCEPTION);
         }
         return savedAlbum;

@@ -37,10 +37,6 @@ public class PlanServiceImpl implements PlanService {
         return insertPlan(plan);
     }
 
-    public Plan updatePlan(Plan plan) {
-        return insertPlan(plan);
-    }
-
     public void deletePlan(Long id) {
         int result = planRepository.deletePlanById(id);
         if (result == 0) {

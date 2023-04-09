@@ -86,7 +86,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Transactional
     public void uploadPhoto(List<MultipartFile> files, Long userId) {
-        userService.usedSpaceCheck(userId);
+        userService.checkUsedSpace(userId);
         String username = userRepository.getUsernameById(userId);
         long size = 0;
         for (MultipartFile file : files) {

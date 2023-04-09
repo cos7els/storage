@@ -7,10 +7,7 @@ import org.cos7els.storage.model.domain.Subscription;
 import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.model.request.RegistrationRequest;
 import org.cos7els.storage.model.response.UserResponse;
-import org.cos7els.storage.service.AuthorityService;
-import org.cos7els.storage.service.PlanService;
-import org.cos7els.storage.service.RegistrationService;
-import org.cos7els.storage.service.UserService;
+import org.cos7els.storage.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -29,6 +26,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final PlanService planService;
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
     @Value("${free_plan_id}")
     private Long freePlanId;
     @Value("#{'${user_authorities_ids}'.split(',')}")
@@ -39,12 +37,13 @@ public class RegistrationServiceImpl implements RegistrationService {
     private String freePlanExpiration;
 
     @Autowired
-    public RegistrationServiceImpl(UserToUserResponseMapper userToUserResponseMapper, AuthorityService authorityService, PasswordEncoder passwordEncoder, PlanService planService, UserService userService) {
+    public RegistrationServiceImpl(UserToUserResponseMapper userToUserResponseMapper, AuthorityService authorityService, PasswordEncoder passwordEncoder, PlanService planService, UserService userService, SubscriptionService subscriptionService) {
         this.userToUserResponseMapper = userToUserResponseMapper;
         this.authorityService = authorityService;
         this.passwordEncoder = passwordEncoder;
         this.planService = planService;
         this.userService = userService;
+        this.subscriptionService = subscriptionService;
     }
 
     public UserResponse registerUser(RegistrationRequest registrationRequest) {
@@ -56,24 +55,25 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private User createUser(RegistrationRequest registrationRequest, List<Long> authoritiesIds) {
-        Plan plan = planService.getPlan(freePlanId);
-        Subscription subscription = new Subscription();
-        subscription.setPlan(plan);
-        subscription.setIssuedDate(LocalDate.now());
-        subscription.setExpiredDate(LocalDate.parse(freePlanExpiration));
-        subscription.setIsActive(true);
         List<Authority> authorities = authoritiesIds
                 .stream()
                 .map(authorityService::getAuthority)
                 .collect(Collectors.toList());
         User user = new User();
-        user.setSubscription(subscription);
         user.setAuthorities(authorities);
         user.setUsername(registrationRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setEmail(registrationRequest.getEmail());
         user.setUsedSpace(0L);
-        System.out.println(user);
-        return userService.saveUser(user);
+        User savedUser = userService.saveUser(user);
+        Plan plan = planService.getPlan(freePlanId);
+        Subscription subscription = new Subscription();
+        subscription.setUserId(user.getId());
+        subscription.setPlan(plan);
+        subscription.setIssuedDate(LocalDate.now());
+        subscription.setExpiredDate(LocalDate.parse(freePlanExpiration));
+        subscription.setIsActive(true);
+        subscriptionService.insertSubscription(subscription);
+        return savedUser;
     }
 }

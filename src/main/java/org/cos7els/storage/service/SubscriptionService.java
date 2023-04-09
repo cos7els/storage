@@ -6,7 +6,7 @@ import org.cos7els.storage.model.response.SubscriptionResponse;
 import java.util.List;
 
 public interface SubscriptionService {
-    SubscriptionResponse getCurrentSubscription(Long subscriptionId);
+    SubscriptionResponse getCurrentSubscription(Long userId);
 
     List<Subscription> getSubscriptions();
 

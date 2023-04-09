@@ -20,8 +20,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionToSubscriptionResponseMapper subscriptionToSubscriptionResponseMapper;
     private final SubscriptionRepository subscriptionRepository;
 
-    public SubscriptionResponse getCurrentSubscription(Long subscriptionId) {
-        return subscriptionToSubscriptionResponseMapper.subscriptionToResponse(selectSubscription(subscriptionId));
+    public SubscriptionResponse getCurrentSubscription(Long userId) {
+        return subscriptionToSubscriptionResponseMapper.subscriptionToResponse(selectCurrentSubscription(userId));
     }
 
     public List<Subscription> getSubscriptions() {
@@ -30,6 +30,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     public Subscription selectSubscription(Long subscriptionId) {
         return subscriptionRepository.findById(subscriptionId).orElseThrow(() -> new NotFoundException(SUBSCRIPTION_NOT_FOUND));
+    }
+
+    public Subscription selectCurrentSubscription(Long userId) {
+        return subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> new NotFoundException(SUBSCRIPTION_NOT_FOUND));
     }
 
     public Subscription insertSubscription(Subscription subscription) {

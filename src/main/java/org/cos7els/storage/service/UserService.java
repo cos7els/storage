@@ -24,5 +24,5 @@ public interface UserService {
 
     void updateUsedSpace(Long userId, Long size);
 
-    void usedSpaceCheck(Long userId);
+    void checkUsedSpace(Long userId);
 }

@@ -13,6 +13,9 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subscriptions_seq")
     @SequenceGenerator(name = "subscriptions_seq", sequenceName = "subscriptions_id_seq", allocationSize = 1)
     private Long id;
+    @Column(name = "user_id")
+    @GeneratedValue()
+    private Long userId;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "plan_id", referencedColumnName = "id")
     private Plan plan;

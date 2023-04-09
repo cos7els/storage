@@ -121,6 +121,9 @@
             <column name="id" type="bigint" defaultValueSequenceNext="subscriptions_id_seq">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
             <column name="plan_id" type="bigint">
                 <constraints nullable="false"/>
             </column>

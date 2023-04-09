@@ -49,7 +49,8 @@
             <column name="email" value="cos7els@gmail.com"/>
         </insert>
         <insert tableName="subscriptions">
-            <column name="plan_id" value="4"/>
+            <column name="user_id" value="1"/>
+            <column name="plan_id" value="1"/>
             <column name="issued_date" value="now()"/>
             <column name="expired_date" value="2050-01-01"/>
         </insert>

@@ -30,11 +30,7 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     private List<Authority> selectAllAuthorities() {
-        List<Authority> authorities = authorityRepository.findAll();
-        if (authorities.isEmpty()) {
-            throw new NotFoundException(AUTHORITIES_NOT_FOUND);
-        }
-        return authorities;
+        return authorityRepository.findAll();
     }
 
     private Authority selectAuthority(Long id) {
