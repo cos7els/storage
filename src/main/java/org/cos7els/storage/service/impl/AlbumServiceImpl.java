@@ -1,6 +1,5 @@
 package org.cos7els.storage.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.mapper.AlbumToAlbumResponseMapper;
@@ -11,18 +10,27 @@ import org.cos7els.storage.model.response.AlbumResponse;
 import org.cos7els.storage.repository.AlbumRepository;
 import org.cos7els.storage.service.AlbumService;
 import org.cos7els.storage.service.PhotoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.*;
+import static org.cos7els.storage.util.ExceptionMessage.ALBUM_NOT_FOUND;
+import static org.cos7els.storage.util.ExceptionMessage.DELETE_ALBUM_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.INSERT_ALBUM_EXCEPTION;
 
 @Service
-@RequiredArgsConstructor
 public class AlbumServiceImpl implements AlbumService {
     private final AlbumToAlbumResponseMapper albumToAlbumResponseMapper;
     private final AlbumRepository albumRepository;
     private final PhotoService photoService;
+
+    @Autowired
+    public AlbumServiceImpl(AlbumToAlbumResponseMapper albumToAlbumResponseMapper, AlbumRepository albumRepository, PhotoService photoService) {
+        this.albumToAlbumResponseMapper = albumToAlbumResponseMapper;
+        this.albumRepository = albumRepository;
+        this.photoService = photoService;
+    }
 
     public List<AlbumResponse> getAlbums(Long userId) {
         List<Album> albums = albumRepository.findAlbumsByUserId(userId);

@@ -1,6 +1,5 @@
 package org.cos7els.storage.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.mapper.PlanToPlanResponseMapper;
@@ -8,17 +7,25 @@ import org.cos7els.storage.model.domain.Plan;
 import org.cos7els.storage.model.response.PlanResponse;
 import org.cos7els.storage.repository.PlanRepository;
 import org.cos7els.storage.service.PlanService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.*;
+import static org.cos7els.storage.util.ExceptionMessage.DELETE_PLAN_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.INSERT_PLAN_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.PLAN_NOT_FOUND;
 
 @Service
-@RequiredArgsConstructor
 public class PlanServiceImpl implements PlanService {
     private final PlanToPlanResponseMapper planToPlanResponseMapper;
     private final PlanRepository planRepository;
+
+    @Autowired
+    public PlanServiceImpl(PlanToPlanResponseMapper planToPlanResponseMapper, PlanRepository planRepository) {
+        this.planToPlanResponseMapper = planToPlanResponseMapper;
+        this.planRepository = planRepository;
+    }
 
     public List<PlanResponse> getActivePlans() {
         List<Plan> plans = planRepository.getPlansByIsActiveTrueOrderById();

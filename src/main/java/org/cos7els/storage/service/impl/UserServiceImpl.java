@@ -18,7 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.*;
+import static org.cos7els.storage.util.ExceptionMessage.CHANGE_PASSWORD_BAD_CREDENTIALS;
+import static org.cos7els.storage.util.ExceptionMessage.DELETE_USER_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.INSERT_USER_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.NO_AVAILABLE_SPACE;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,7 +31,12 @@ public class UserServiceImpl implements UserService {
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public UserServiceImpl(UserToUserResponseMapper userToUserResponseMapper, PasswordEncoder passwordEncoder, UserRepository userRepository, SubscriptionService subscriptionService) {
+    public UserServiceImpl(
+            UserToUserResponseMapper userToUserResponseMapper,
+            PasswordEncoder passwordEncoder,
+            UserRepository userRepository,
+            SubscriptionService subscriptionService
+    ) {
         this.userToUserResponseMapper = userToUserResponseMapper;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
@@ -47,7 +55,8 @@ public class UserServiceImpl implements UserService {
 
     public UserResponse changePassword(ChangePasswordRequest request, Long userId) {
         User user = selectUser(userId);
-        if (passwordEncoder.matches(request.getOldPassword(), user.getPassword()) && request.getNewPassword().equals(request.getRepeatNewPassword())) {
+        if (passwordEncoder.matches(request.getOldPassword(), user.getPassword()) &&
+                request.getNewPassword().equals(request.getRepeatNewPassword())) {
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             return userToUserResponseMapper.userToResponse(insertUser(user));
         } else {
@@ -85,6 +94,14 @@ public class UserServiceImpl implements UserService {
         if (user.getUsedSpace() >= subscriptionService.getCurrentSubscription(userId).getPlan().getAvailableSpace()) {
             throw new NoAvailableSpaceException(NO_AVAILABLE_SPACE);
         }
+    }
+
+    public boolean isUserExists(String username) {
+        return userRepository.existsUserByUsername(username);
+    }
+
+    public boolean isEmailExists(String email) {
+        return userRepository.existsUserByEmail(email);
     }
 
     private User selectUser(Long userId) {

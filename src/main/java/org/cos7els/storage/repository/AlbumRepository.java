@@ -17,7 +17,4 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 
     @Transactional
     int deleteAlbumByIdAndUserId(Long albumId, Long userId);
-
-    @Transactional
-    int deleteAlbumsByUserId(Long userId);
 }

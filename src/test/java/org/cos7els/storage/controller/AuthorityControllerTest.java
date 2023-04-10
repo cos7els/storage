@@ -2,10 +2,9 @@ package org.cos7els.storage.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.cos7els.storage.model.domain.Plan;
-import org.cos7els.storage.model.response.PlanResponse;
+import org.cos7els.storage.model.domain.Authority;
 import org.cos7els.storage.security.model.UserDetailsImpl;
-import org.cos7els.storage.service.PlanService;
+import org.cos7els.storage.service.AuthorityService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -30,96 +30,81 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class PlanControllerTest {
+public class AuthorityControllerTest {
     private MockMvc mockMvc;
     private ObjectWriter objectWriter;
     @Mock
-    private PlanService planService;
+    private AuthorityService authorityService;
     @InjectMocks
-    private PlanController planController;
-    private UserDetailsImpl userDetails;
+    private AuthorityController authorityController;
     private Long id;
-    private Plan plan;
-    private List<Plan> plans;
-    private List<PlanResponse> planResponses;
+    private Authority authority;
+    private List<Authority> authorities;
     @BeforeEach
     public void init() {
         objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
         id = 1L;
-        plan = new Plan();
-        plans = List.of(new Plan());
-        planResponses = List.of(new PlanResponse());
-        userDetails = new UserDetailsImpl(id, null, null, null);
+        authority = new Authority();
+        authorities = List.of(new Authority());
         mockMvc = MockMvcBuilders
-                .standaloneSetup(planController)
+                .standaloneSetup(authorityController)
                 .setCustomArgumentResolvers(putUserDetails)
                 .build();
     }
 
     @Test
-    public void getActivePlansTest() throws Exception {
-        when(planService.getActivePlans()).thenReturn(planResponses);
-        mockMvc.perform(get("/plans"))
+    public void getAuthoritiesTest() throws Exception {
+        when(authorityService.getAllAuthorities()).thenReturn(authorities);
+        mockMvc.perform(get("/admin/authorities"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andReturn();
-        verify(planService).getActivePlans();
+        verify(authorityService).getAllAuthorities();
     }
 
     @Test
-    public void getPlansTest() throws Exception {
-        when(planService.getAllPlans()).thenReturn(plans);
-        mockMvc.perform(get("/admin/plans"))
+    public void getAuthorityTest() throws Exception {
+        when(authorityService.getAuthority(id)).thenReturn(authority);
+        mockMvc.perform(get("/admin/authority/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andReturn();
-        verify(planService).getAllPlans();
+        verify(authorityService).getAuthority(id);
     }
 
     @Test
-    public void getPlanTest() throws Exception {
-        when(planService.getPlan(id)).thenReturn(plan);
-        mockMvc.perform(get("/admin/plan/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
-                .andReturn();
-        verify(planService).getPlan(id);
-    }
-
-    @Test
-    public void createPlanTest() throws Exception {
-        when(planService.savePlan(plan)).thenReturn(plan);
-        mockMvc.perform(post("/admin/plan")
+    public void createAuthorityTest() throws Exception {
+        when(authorityService.saveAuthority(authority)).thenReturn(authority);
+        mockMvc.perform(post("/admin/authority")
                         .contentType(APPLICATION_JSON)
-                        .content(objectWriter.writeValueAsString(plan)))
+                        .content(objectWriter.writeValueAsString(authority)))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andReturn();
-        verify(planService).savePlan(plan);
+        verify(authorityService).saveAuthority(authority);
     }
 
     @Test
-    public void updatePlanTest() throws Exception {
-        when(planService.savePlan(plan)).thenReturn(plan);
-        mockMvc.perform(put("/admin/plan")
+    public void updateAuthorityTest() throws Exception {
+        when(authorityService.saveAuthority(authority)).thenReturn(authority);
+        mockMvc.perform(put("/admin/authority")
                         .contentType(APPLICATION_JSON)
-                        .content(objectWriter.writeValueAsString(plan)))
+                        .content(objectWriter.writeValueAsString(authority)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andReturn();
-        verify(planService).savePlan(plan);
+        verify(authorityService).saveAuthority(authority);
     }
 
     @Test
-    public void deletePlanTest() throws Exception {
-        mockMvc.perform(delete("/admin/plan/{id}", id))
+    public void deleteAuthorityTest() throws Exception {
+        mockMvc.perform(delete("/admin/authority/{id}", id))
                 .andExpect(status().isNoContent())
                 .andReturn();
-        verify(planService).deletePlan(id);
+        verify(authorityService).deleteAuthority(id);
     }
 
     private final HandlerMethodArgumentResolver putUserDetails = new HandlerMethodArgumentResolver() {
@@ -131,7 +116,7 @@ public class PlanControllerTest {
         @Override
         public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer,
                                       @NotNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-            return userDetails;
+            return new UserDetailsImpl(1L, null, null, null);
         }
     };
 }

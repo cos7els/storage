@@ -12,8 +12,5 @@ public interface StorageService {
 
     byte[] getThumbnail(Photo photo);
 
-    void removePhoto(Photo photo);
-
     void removePhotos(List<Photo> photos);
-
 }

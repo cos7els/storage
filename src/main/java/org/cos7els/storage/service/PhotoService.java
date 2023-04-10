@@ -20,8 +20,6 @@ public interface PhotoService {
 
     void deletePhoto(Long photoId, Long userId);
 
-    void deletePhotos(Long userId);
-
     byte[] downloadPhotos(SelectedPhotoRequest selectedPhotoRequest, Long userId);
 
     byte[] downloadPhotos(List<Photo> photos);

@@ -1,5 +1,6 @@
 package org.cos7els.storage.service.impl;
 
+import org.cos7els.storage.exception.BadDataException;
 import org.cos7els.storage.mapper.UserToUserResponseMapper;
 import org.cos7els.storage.model.domain.Authority;
 import org.cos7els.storage.model.domain.Plan;
@@ -7,7 +8,11 @@ import org.cos7els.storage.model.domain.Subscription;
 import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.model.request.RegistrationRequest;
 import org.cos7els.storage.model.response.UserResponse;
-import org.cos7els.storage.service.*;
+import org.cos7els.storage.service.AuthorityService;
+import org.cos7els.storage.service.PlanService;
+import org.cos7els.storage.service.RegistrationService;
+import org.cos7els.storage.service.SubscriptionService;
+import org.cos7els.storage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -17,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.cos7els.storage.util.ExceptionMessage.USERNAME_OR_EMAIL_EXISTS;
 
 @Service
 @PropertySource("classpath:variables.properties")
@@ -37,7 +44,14 @@ public class RegistrationServiceImpl implements RegistrationService {
     private String freePlanExpiration;
 
     @Autowired
-    public RegistrationServiceImpl(UserToUserResponseMapper userToUserResponseMapper, AuthorityService authorityService, PasswordEncoder passwordEncoder, PlanService planService, UserService userService, SubscriptionService subscriptionService) {
+    public RegistrationServiceImpl(
+            UserToUserResponseMapper userToUserResponseMapper,
+            AuthorityService authorityService,
+            PasswordEncoder passwordEncoder,
+            PlanService planService,
+            UserService userService,
+            SubscriptionService subscriptionService
+    ) {
         this.userToUserResponseMapper = userToUserResponseMapper;
         this.authorityService = authorityService;
         this.passwordEncoder = passwordEncoder;
@@ -55,6 +69,10 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private User createUser(RegistrationRequest registrationRequest, List<Long> authoritiesIds) {
+        if (userService.isUserExists(registrationRequest.getUsername()) ||
+                userService.isEmailExists(registrationRequest.getEmail())) {
+            throw new BadDataException(USERNAME_OR_EMAIL_EXISTS);
+        }
         List<Authority> authorities = authoritiesIds
                 .stream()
                 .map(authorityService::getAuthority)

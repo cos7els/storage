@@ -44,9 +44,9 @@
     </changeSet>
     <changeSet id="1.0.1" author="cos7els">
         <insert tableName="users">
-            <column name="username" value="cos7els"/>
+            <column name="username" value="root"/>
             <column name="password" value="$2a$12$dPIe/Rcg1ABQkoaHsa.to.XJAmOI3NHuUnjgZ4yqTLACLL9MWHwba"/>
-            <column name="email" value="cos7els@gmail.com"/>
+            <column name="email" value="root@root.com"/>
         </insert>
         <insert tableName="subscriptions">
             <column name="user_id" value="1"/>

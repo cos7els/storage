@@ -1,9 +1,9 @@
 package org.cos7els.storage.security.service;
 
-import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.model.domain.User;
 import org.cos7els.storage.repository.UserRepository;
 import org.cos7els.storage.security.model.UserDetailsImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,9 +15,13 @@ import java.util.stream.Collectors;
 import static org.cos7els.storage.util.ExceptionMessage.USER_NOT_FOUND;
 
 @Service
-@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
+
+    @Autowired
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public boolean isUserExists(String username) {
         return userRepository.existsUserByUsername(username);

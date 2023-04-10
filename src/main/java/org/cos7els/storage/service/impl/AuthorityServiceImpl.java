@@ -1,21 +1,27 @@
 package org.cos7els.storage.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.model.domain.Authority;
 import org.cos7els.storage.repository.AuthorityRepository;
 import org.cos7els.storage.service.AuthorityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.cos7els.storage.util.ExceptionMessage.*;
+import static org.cos7els.storage.util.ExceptionMessage.AUTHORITY_NOT_FOUND;
+import static org.cos7els.storage.util.ExceptionMessage.DELETE_AUTHORITY_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.INSERT_AUTHORITY_EXCEPTION;
 
 @Service
-@RequiredArgsConstructor
 public class AuthorityServiceImpl implements AuthorityService {
     private final AuthorityRepository authorityRepository;
+
+    @Autowired
+    public AuthorityServiceImpl(AuthorityRepository authorityRepository) {
+        this.authorityRepository = authorityRepository;
+    }
 
     public List<Authority> getAllAuthorities() {
         return selectAllAuthorities();

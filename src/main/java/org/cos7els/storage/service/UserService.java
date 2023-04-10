@@ -25,4 +25,8 @@ public interface UserService {
     void updateUsedSpace(Long userId, Long size);
 
     void checkUsedSpace(Long userId);
+
+    boolean isUserExists(String username);
+
+    boolean isEmailExists(String email);
 }

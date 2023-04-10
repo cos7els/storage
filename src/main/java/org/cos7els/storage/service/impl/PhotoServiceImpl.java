@@ -7,7 +7,6 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
 import io.github.rctcwyvrn.blake3.Blake3;
-import lombok.RequiredArgsConstructor;
 import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.mapper.PhotoToPhotoResponseMapper;
@@ -20,6 +19,7 @@ import org.cos7els.storage.repository.UserRepository;
 import org.cos7els.storage.service.PhotoService;
 import org.cos7els.storage.service.StorageService;
 import org.cos7els.storage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,6 @@ import static org.cos7els.storage.util.ExceptionMessage.INSERT_PHOTO_EXCEPTION;
 import static org.cos7els.storage.util.ExceptionMessage.NOT_FOUND;
 
 @Service
-@RequiredArgsConstructor
 @PropertySource("classpath:variables.properties")
 public class PhotoServiceImpl implements PhotoService {
     private final PhotoToPhotoResponseMapper photoToPhotoResponseMapper;
@@ -52,6 +51,21 @@ public class PhotoServiceImpl implements PhotoService {
     @Value("${extension}")
     private String extension;
 
+    @Autowired
+    public PhotoServiceImpl(
+            PhotoToPhotoResponseMapper photoToPhotoResponseMapper,
+            PhotoRepository photoRepository,
+            StorageService storageService,
+            UserService userService,
+            UserRepository userRepository
+    ) {
+        this.photoToPhotoResponseMapper = photoToPhotoResponseMapper;
+        this.photoRepository = photoRepository;
+        this.storageService = storageService;
+        this.userService = userService;
+        this.userRepository = userRepository;
+    }
+
     public List<ThumbnailResponse> getThumbnails(Long userId) {
         return photoToPhotoResponseMapper.photosToThumbnails(selectPhotos(userId));
     }
@@ -61,7 +75,9 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     public byte[] downloadPhotos(SelectedPhotoRequest selectedPhotoRequest, Long userId) {
-        return writeZipArchive(photoToPhotoResponseMapper.photosToResponses(photoRepository.findAllById(selectedPhotoRequest.getIds())));
+        return writeZipArchive(photoToPhotoResponseMapper.photosToResponses(
+                photoRepository.findAllById(selectedPhotoRequest.getIds()))
+        );
     }
 
     public byte[] downloadPhotos(List<Photo> photos) {
@@ -101,7 +117,9 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     private boolean isFileValid(MultipartFile file) {
-        return !file.isEmpty() && (file.getOriginalFilename() != null) && Objects.equals(file.getContentType(), "image/jpeg");
+        return !file.isEmpty() &&
+                (file.getOriginalFilename() != null) &&
+                Objects.equals(file.getContentType(), "image/jpeg");
     }
 
     private void createUploadedPhoto(MultipartFile file, String path, Long userId) {
@@ -123,7 +141,11 @@ public class PhotoServiceImpl implements PhotoService {
         for (int i = 1; photoRepository.existsPhotoByFileName(fileName); i++) {
             fileName = file.getOriginalFilename();
             if (fileName != null) {
-                fileName = String.format("%s (%d)%s", fileName.substring(0, fileName.lastIndexOf('.')), i, fileName.substring(fileName.lastIndexOf('.')));
+                fileName = String.format(
+                        "%s (%d)%s",
+                        fileName.substring(0, fileName.lastIndexOf('.')),
+                        i, fileName.substring(fileName.lastIndexOf('.'))
+                );
             }
         }
         return fileName;
@@ -178,11 +200,6 @@ public class PhotoServiceImpl implements PhotoService {
         deletePhotos(List.of(selectPhoto(photoId, userId)), userId);
     }
 
-    @Transactional
-    public void deletePhotos(Long userId) {
-        deletePhotos(selectPhotos(userId), userId);
-    }
-
     private void deletePhotos(List<Photo> photos, Long userId) {
         long size = photos.stream().mapToLong(Photo::getSize).sum();
         photoRepository.deleteAllInBatch(photos);
@@ -191,7 +208,9 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     public List<Photo> getPhotosByIds(List<Long> photoIds, Long userId) {
-        return photoRepository.findAllById(photoIds).stream().filter(p -> p.getUserId().equals(userId)).collect(Collectors.toList());
+        return photoRepository.findAllById(photoIds).stream().filter(
+                p -> p.getUserId().equals(userId)).collect(Collectors.toList()
+        );
     }
 
     private String generateHashedPath(String dir, MultipartFile file) {
