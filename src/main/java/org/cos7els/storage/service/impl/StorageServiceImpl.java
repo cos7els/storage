@@ -4,6 +4,8 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectsArgs;
+import io.minio.Result;
+import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.cos7els.storage.exception.InternalException;
@@ -109,7 +111,15 @@ public class StorageServiceImpl implements StorageService {
     private void removeObjects(String bucketName, List<Photo> photos) {
         List<DeleteObject> objects = photos.stream().map(p -> new DeleteObject(p.getPath())).collect(Collectors.toList());
         try {
-            minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objects).build());
+            Iterable<Result<DeleteError>> results =
+                    minioClient.
+                            removeObjects(
+                                    RemoveObjectsArgs.builder()
+                                            .bucket(bucketName)
+                                            .objects(objects)
+                                            .build()
+                            );
+            results.forEach(System.out::println);
         } catch (Exception e) {
             throw new InternalException(REMOVE_OBJECT_EXCEPTION);
         }

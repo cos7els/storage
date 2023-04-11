@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .antMatchers("/login", "/signup", "/swagger-ui/**")
                 .permitAll()
                 .antMatchers("/admin/**")
-                .hasRole("ADMIN")
+                .hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()

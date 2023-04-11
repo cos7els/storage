@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.cos7els.storage.util.ExceptionMessage.CHANGE_PASSWORD_BAD_CREDENTIALS;
@@ -76,7 +77,10 @@ public class UserServiceImpl implements UserService {
         return insertUser(user);
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
+        subscriptionService.deleteSubscriptionByUserId(userId);
+
         int result = userRepository.deleteUserById(userId);
         if (result == 0) {
             throw new InternalException(DELETE_USER_EXCEPTION);

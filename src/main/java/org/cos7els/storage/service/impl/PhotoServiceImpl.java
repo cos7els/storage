@@ -8,6 +8,7 @@ import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
 import io.github.rctcwyvrn.blake3.Blake3;
 import org.cos7els.storage.exception.InternalException;
+import org.cos7els.storage.exception.NoContentException;
 import org.cos7els.storage.exception.NotFoundException;
 import org.cos7els.storage.mapper.PhotoToPhotoResponseMapper;
 import org.cos7els.storage.model.domain.Photo;
@@ -75,9 +76,11 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     public byte[] downloadPhotos(SelectedPhotoRequest selectedPhotoRequest, Long userId) {
-        return writeZipArchive(photoToPhotoResponseMapper.photosToResponses(
-                photoRepository.findAllById(selectedPhotoRequest.getIds()))
-        );
+        List<Photo> photos = photoRepository.findAllById(selectedPhotoRequest.getIds());
+        if (photos.isEmpty()) {
+            throw new NoContentException();
+        }
+        return writeZipArchive(photoToPhotoResponseMapper.photosToResponses(photos));
     }
 
     public byte[] downloadPhotos(List<Photo> photos) {
@@ -196,14 +199,15 @@ public class PhotoServiceImpl implements PhotoService {
         deletePhotos(getPhotosByIds(request.getIds(), userId), userId);
     }
 
+    @Transactional
     public void deletePhoto(Long photoId, Long userId) {
         deletePhotos(List.of(selectPhoto(photoId, userId)), userId);
     }
 
     private void deletePhotos(List<Photo> photos, Long userId) {
         long size = photos.stream().mapToLong(Photo::getSize).sum();
-        photoRepository.deleteAllInBatch(photos);
         storageService.removePhotos(photos);
+        photoRepository.deleteAll(photos);
         userService.updateUsedSpace(userId, size * -1L);
     }
 

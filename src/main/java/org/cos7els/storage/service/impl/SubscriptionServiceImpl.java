@@ -62,4 +62,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new InternalException(DELETE_SUBSCRIPTION_EXCEPTION);
         }
     }
+
+    public void deleteSubscriptionByUserId(Long userId) {
+        int result = subscriptionRepository.deleteSubscriptionByUserId(userId);
+        if (result == 0) {
+            throw new InternalException(DELETE_SUBSCRIPTION_EXCEPTION);
+        }
+    }
 }
