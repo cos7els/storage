@@ -26,6 +26,7 @@ public interface ExceptionMessage {
     String CHANGE_PASSWORD_BAD_CREDENTIALS = "Passwords doesn't match";
     String PUT_OBJECT_EXCEPTION = "Put object exception";
     String GET_OBJECT_EXCEPTION = "Get object exception";
+    String LIST_OBJECT_EXCEPTION = "List object exception";
     String GENERATE_THUMBNAIL_EXCEPTION = "Generate thumbnail exception";
     String REMOVE_OBJECT_EXCEPTION = "Remove object exception";
 }

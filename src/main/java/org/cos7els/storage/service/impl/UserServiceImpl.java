@@ -10,6 +10,7 @@ import org.cos7els.storage.model.request.ChangeEmailRequest;
 import org.cos7els.storage.model.request.ChangePasswordRequest;
 import org.cos7els.storage.model.response.UserResponse;
 import org.cos7els.storage.repository.UserRepository;
+import org.cos7els.storage.service.StorageService;
 import org.cos7els.storage.service.SubscriptionService;
 import org.cos7els.storage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +31,21 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final SubscriptionService subscriptionService;
+    private final StorageService storageService;
 
     @Autowired
     public UserServiceImpl(
             UserToUserResponseMapper userToUserResponseMapper,
             PasswordEncoder passwordEncoder,
             UserRepository userRepository,
-            SubscriptionService subscriptionService
+            SubscriptionService subscriptionService,
+            StorageService storageService
     ) {
         this.userToUserResponseMapper = userToUserResponseMapper;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.subscriptionService = subscriptionService;
+        this.storageService = storageService;
     }
 
     public UserResponse getUserResponse(Long userId) {
@@ -79,8 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
-        subscriptionService.deleteSubscriptionByUserId(userId);
-
+        storageService.removePhotos(selectUser(userId).getUsername());
         int result = userRepository.deleteUserById(userId);
         if (result == 0) {
             throw new InternalException(DELETE_USER_EXCEPTION);

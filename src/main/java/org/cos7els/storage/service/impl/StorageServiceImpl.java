@@ -1,12 +1,19 @@
 package org.cos7els.storage.service.impl;
 
 import io.minio.GetObjectArgs;
+import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectsArgs;
 import io.minio.Result;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
+import io.minio.messages.Item;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.cos7els.storage.exception.InternalException;
 import org.cos7els.storage.exception.NotFoundException;
@@ -22,11 +29,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.cos7els.storage.util.ExceptionMessage.GENERATE_THUMBNAIL_EXCEPTION;
 import static org.cos7els.storage.util.ExceptionMessage.GET_OBJECT_EXCEPTION;
+import static org.cos7els.storage.util.ExceptionMessage.LIST_OBJECT_EXCEPTION;
 import static org.cos7els.storage.util.ExceptionMessage.OBJECT_NOT_FOUND;
 import static org.cos7els.storage.util.ExceptionMessage.PUT_OBJECT_EXCEPTION;
 import static org.cos7els.storage.util.ExceptionMessage.REMOVE_OBJECT_EXCEPTION;
@@ -104,25 +115,46 @@ public class StorageServiceImpl implements StorageService {
     }
 
     public void removePhotos(List<Photo> photos) {
-        removeObjects(photosBucket, photos);
-        removeObjects(thumbnailsBucket, photos);
+        List<DeleteObject> objects = photos.stream()
+                .map(p -> new DeleteObject(p.getPath()))
+                .collect(Collectors.toList());
+        removeObjects(photosBucket, objects);
+        removeObjects(thumbnailsBucket, objects);
     }
 
-    private void removeObjects(String bucketName, List<Photo> photos) {
-        List<DeleteObject> objects = photos.stream().map(p -> new DeleteObject(p.getPath())).collect(Collectors.toList());
+    public void removePhotos(String username) {
+        removeObjects(photosBucket, listDeleteObjects(listObjects(photosBucket, username)));
+        removeObjects(thumbnailsBucket, listDeleteObjects(listObjects(thumbnailsBucket, username)));
+    }
+
+    private void removeObjects(String bucketName, List<DeleteObject> deleteObjects) {
         try {
             Iterable<Result<DeleteError>> results =
-                    minioClient.
-                            removeObjects(
+                    minioClient
+                            .removeObjects(
                                     RemoveObjectsArgs.builder()
                                             .bucket(bucketName)
-                                            .objects(objects)
+                                            .objects(deleteObjects)
                                             .build()
                             );
             results.forEach(System.out::println);
         } catch (Exception e) {
             throw new InternalException(REMOVE_OBJECT_EXCEPTION);
         }
+    }
+
+    private List<DeleteObject> listDeleteObjects(Iterable<Result<Item>> listObjects) {
+        List<DeleteObject> deleteObjects = new ArrayList<>();
+        for (Result<Item> item : listObjects) {
+            try {
+                deleteObjects.add(new DeleteObject(item.get().objectName()));
+            } catch (ErrorResponseException | XmlParserException | ServerException | NoSuchAlgorithmException |
+                     IOException | InvalidResponseException | InvalidKeyException | io.minio.errors.InternalException |
+                     InsufficientDataException e) {
+                throw new InternalException(LIST_OBJECT_EXCEPTION);
+            }
+        }
+        return deleteObjects;
     }
 
     private InputStream generateThumbnail(MultipartFile file) {
@@ -133,5 +165,15 @@ public class StorageServiceImpl implements StorageService {
             throw new InternalException(GENERATE_THUMBNAIL_EXCEPTION);
         }
         return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+    }
+
+    private Iterable<Result<Item>> listObjects(String bucketName, String username) {
+        return minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .prefix(username)
+                        .recursive(true)
+                        .build()
+        );
     }
 }

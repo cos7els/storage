@@ -13,4 +13,6 @@ public interface StorageService {
     byte[] getThumbnail(Photo photo);
 
     void removePhotos(List<Photo> photos);
+
+    void removePhotos(String username);
 }

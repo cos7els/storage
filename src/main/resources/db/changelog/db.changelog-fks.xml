@@ -57,15 +57,15 @@
                                  baseColumnNames="plan_id"
                                  constraintName="subscriptions_plans_fk"
                                  referencedTableName="plans"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"/>
+                                 referencedColumnNames="id"/>
 
         <addForeignKeyConstraint baseTableName="subscriptions"
                                  baseColumnNames="user_id"
                                  constraintName="subscriptions_users_id_fk"
                                  referencedTableName="users"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
     </changeSet>
 
 </databaseChangeLog>
