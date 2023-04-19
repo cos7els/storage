@@ -26,6 +26,7 @@ Application use PostgreSQL database. For start the application you need Postgres
 
 ## Available endpoints for users
 
+---
 * http://localhost:8080/signup - POST method, registration, request body example:\
   {\
   "username": "username",\
@@ -98,14 +99,16 @@ Application use PostgreSQL database. For start the application you need Postgres
 * http://localhost:8080/subscription - GET method, show user's subscription 
 ---
 * http://localhost:8080/plans - GET method, show available plans
+---
 
 ## Available endpoints for admins
 
+---
 * http://localhost:8080/admin/signup - POST method, registration admins, request body example:\
   {\
-  "username": "username",\
+  "username": "user",\
   "password": "password",\
-  "email": "username@gmail.com"\
+  "email": "user@gmail.com"\
   }
 * http://localhost:8080/admin/users - GET method, show all user's
 ---
@@ -113,14 +116,14 @@ Application use PostgreSQL database. For start the application you need Postgres
 ---
 * http://localhost:8080/admin/user - POST method, create user by ID, request body example:\
     {\
-    "username": "username",\
+    "username": "user",\
     "password": "password",\
-    "email": "email",\
+    "email": "user@gmail.com",\
     "usedSpace": 0,\
     "authorities": [\
     {\
   "id": 1,\
-  "name": "authority name"\
+  "name": "ADMIN"\
   }\
   ]\
   }
@@ -128,34 +131,99 @@ Application use PostgreSQL database. For start the application you need Postgres
 * http://localhost:8080/admin/user - PUT method, edit user by ID, request body example:\
   {\
   "id": 1,\
-  "username": "username",\
+  "username": "user",\
   "password": "password",\
-  "email": "email",\
+  "email": "user@gmail.com",\
   "usedSpace": 0,\
   "authorities": [\
   {\
   "id": 1,\
-  "name": "authority name"\
+  "name": "ADMIN"\
   }\
   ]\
   }
 ---
 * http://localhost:8080/admin/user/{userId} - DELETE method, delete user by ID
+---
 * http://localhost:8080/admin/authority/{authorityId}
+---
 * http://localhost:8080/admin/authorities - GET method, show all authorities
+---
 * http://localhost:8080/admin/authority/{authorityId} - GET method, show authority by ID
-* http://localhost:8080/admin/authority - POST method, create authority
-* http://localhost:8080/admin/authority - PUT method, edit authority
+---
+* http://localhost:8080/admin/authority - POST method, create authority, request body example:\
+  {\
+  "name": "USER"\
+  }
+---
+* http://localhost:8080/admin/authority - PUT method, edit authority, request body example:\
+  {\
+  "id": 1,\
+  "name": "ADMIN"\
+  }
+---
 * http://localhost:8080/admin/authority/{authorityId} - DELETE method, delete authority by ID
-
+---
 * http://localhost:8080/admin/plans - GET method, show all plans 
+---
 * http://localhost:8080/admin/plan/{planId} - GET method, show plan by ID
-* http://localhost:8080/admin/plan - POST method, create plan
-* http://localhost:8080/admin/plan - PUT method, edit plan
+---
+* http://localhost:8080/admin/plan - POST method, create plan, request body example:\
+  {\
+  "title": "50GB",\
+  "availableSpace": 50000000000,\
+  "monthlyPrice": 1.99,\
+  "yearlyPrice": 19.99,\
+  "isActive": true\
+  }
+---
+* http://localhost:8080/admin/plan - PUT method, edit plan, request body example:\
+  {\
+  "id": 1,\
+  "title": "50GB",\
+  "availableSpace": 50000000000,\
+  "monthlyPrice": 1.99,\
+  "yearlyPrice": 19.99,\
+  "isActive": true\
+  }
+---
 * http://localhost:8080/admin/plan/{planId} - DELETE method, delete plan by ID
-
+---
 * http://localhost:8080/admin/subscriptions - GET method, show all subscriptions
+---
 * http://localhost:8080/admin/subscription/{subscriptionId} - GET method, show subscription by ID
-* http://localhost:8080/admin/subscription - POST method, create subscription
-* http://localhost:8080/admin/subscription - PUT method, edit subscription
+---
+* http://localhost:8080/admin/subscription - POST method, create subscription, request body example:\
+  {\
+  "userId": 1,\
+  "plan": {\
+  "id": 1,\
+  "title": "FREE",\
+  "availableSpace": 10000000000,\
+  "monthlyPrice": 0,\
+  "yearlyPrice": 0,\
+  "isActive": true\
+  },\
+  "issuedDate": "2023-04-11",\
+  "expiredDate": "2050-01-01",\
+  "isActive": true\
+  }
+---
+* http://localhost:8080/admin/subscription - PUT method, edit subscription, request body example:\
+  {\
+  "id": 1,\
+  "userId": 1,\
+  "plan": {\
+  "id": 1,\
+  "title": "FREE",\
+  "availableSpace": 10000000000,\
+  "monthlyPrice": 0,\
+  "yearlyPrice": 0,\
+  "isActive": true\
+  },\
+  "issuedDate": "2023-04-11",\
+  "expiredDate": "2050-01-01",\
+  "isActive": true\
+  }
+---
 * http://localhost:8080/admin/subscription/{subscriptionId} - DELETE method, delete subscription by ID
