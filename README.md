@@ -26,84 +26,82 @@ Application use PostgreSQL database. For start the application you need Postgres
 
 ## Available endpoints for users
 
----
 * http://localhost:8080/signup - POST method, registration, request body example:\
   {\
   "username": "username",\
   "password": "password",\
   "email": "username@gmail.com"\
   }
----
+***
 * http://localhost:8080/login - POST method, login, request body example:\
   {\
   "username": "username",\
   "password": "password"\
   }
----
+***
 * http://localhost:8080/user - GET method, current user information
----
+***
 * http://localhost:8080/user/change/email - PUT method, change user's email, request body example:\
   {\
   "email": "new email"\
   }
----
+***
 * http://localhost:8080/user/change/password - PUT method, change user's password, request body example:\
   {\
   "oldPassword": "old password",\
   "newPassword": "new password",\
   "repeatNewPassword": "new password"\
   }
----
+***
 * http://localhost:8080/user - DELETE method, delete current user's account
----
+***
 * http://localhost:8080/photos - GET method, show all user's photos
----
+***
 * http://localhost:8080/photos/upload - POST method, upload photos, request body is multipart/form-data
----
+***
 * http://localhost:8080/photo/{photoId} - GET method, show photo by ID
----
+***
 * http://localhost:8080/photo/{photoId}/download - GET method, download photo by ID
----
+***
 * http://localhost:8080/photo/{photoId}/delete - DELETE method, delete photo by ID
----
+***
 * http://localhost:8080/photos/download - POST method, download selected photos, request body example:\
   {\
   "ids": [1,2,3,4,...]\
   }
----
+***
 * http://localhost:8080/photos - DELETE method, delete selected photos, request body example:\
   {\
   "ids": [1,2,3,...]\
   }
----
+***
 * http://localhost:8080/albums - GET method, show all user's albums
----
+***
 * http://localhost:8080/album - POST method, create album, request body example:\
   {\
   "title": "album title",\
   "photoIds": [1,2,3,...]\
   }
----
+***
 * http://localhost:8080/album/{albumId} - GET method, show album by ID
----
+***
 * http://localhost:8080/album/{albumId} - PUT method, edit album by ID, request body example:\
   {\
   "title": "new album title",\
   "photoIds": [1,2,3,...]\
   }
----
+***
 * http://localhost:8080/album/{albumId}/download - GET method, download album by ID
----
+***
 * http://localhost:8080/album/{albumId} - DELETE method, delete album by ID
----
+***
 * http://localhost:8080/subscription - GET method, show user's subscription 
----
+***
 * http://localhost:8080/plans - GET method, show available plans
----
+***
 
 ## Available endpoints for admins
 
----
 * http://localhost:8080/admin/signup - POST method, registration admins, request body example:\
   {\
   "username": "user",\
@@ -111,9 +109,9 @@ Application use PostgreSQL database. For start the application you need Postgres
   "email": "user@gmail.com"\
   }
 * http://localhost:8080/admin/users - GET method, show all user's
----
+***
 * http://localhost:8080/admin/user/{userId} - GET method, show user by ID
----
+***
 * http://localhost:8080/admin/user - POST method, create user by ID, request body example:\
     {\
     "username": "user",\
@@ -127,7 +125,7 @@ Application use PostgreSQL database. For start the application you need Postgres
   }\
   ]\
   }
----
+***
 * http://localhost:8080/admin/user - PUT method, edit user by ID, request body example:\
   {\
   "id": 1,\
@@ -142,32 +140,32 @@ Application use PostgreSQL database. For start the application you need Postgres
   }\
   ]\
   }
----
+***
 * http://localhost:8080/admin/user/{userId} - DELETE method, delete user by ID
----
+***
 * http://localhost:8080/admin/authority/{authorityId}
----
+***
 * http://localhost:8080/admin/authorities - GET method, show all authorities
----
+***
 * http://localhost:8080/admin/authority/{authorityId} - GET method, show authority by ID
----
+***
 * http://localhost:8080/admin/authority - POST method, create authority, request body example:\
   {\
   "name": "USER"\
   }
----
+***
 * http://localhost:8080/admin/authority - PUT method, edit authority, request body example:\
   {\
   "id": 1,\
   "name": "ADMIN"\
   }
----
+***
 * http://localhost:8080/admin/authority/{authorityId} - DELETE method, delete authority by ID
----
+***
 * http://localhost:8080/admin/plans - GET method, show all plans 
----
+***
 * http://localhost:8080/admin/plan/{planId} - GET method, show plan by ID
----
+***
 * http://localhost:8080/admin/plan - POST method, create plan, request body example:\
   {\
   "title": "50GB",\
@@ -176,7 +174,7 @@ Application use PostgreSQL database. For start the application you need Postgres
   "yearlyPrice": 19.99,\
   "isActive": true\
   }
----
+***
 * http://localhost:8080/admin/plan - PUT method, edit plan, request body example:\
   {\
   "id": 1,\
@@ -186,13 +184,13 @@ Application use PostgreSQL database. For start the application you need Postgres
   "yearlyPrice": 19.99,\
   "isActive": true\
   }
----
+***
 * http://localhost:8080/admin/plan/{planId} - DELETE method, delete plan by ID
----
+***
 * http://localhost:8080/admin/subscriptions - GET method, show all subscriptions
----
+***
 * http://localhost:8080/admin/subscription/{subscriptionId} - GET method, show subscription by ID
----
+***
 * http://localhost:8080/admin/subscription - POST method, create subscription, request body example:\
   {\
   "userId": 1,\
@@ -208,7 +206,7 @@ Application use PostgreSQL database. For start the application you need Postgres
   "expiredDate": "2050-01-01",\
   "isActive": true\
   }
----
+***
 * http://localhost:8080/admin/subscription - PUT method, edit subscription, request body example:\
   {\
   "id": 1,\
@@ -225,5 +223,5 @@ Application use PostgreSQL database. For start the application you need Postgres
   "expiredDate": "2050-01-01",\
   "isActive": true\
   }
----
+***
 * http://localhost:8080/admin/subscription/{subscriptionId} - DELETE method, delete subscription by ID
