@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
-        storageService.removePhotos(selectUser(userId).getUsername());
         int result = userRepository.deleteUserById(userId);
         if (result == 0) {
             throw new InternalException(DELETE_USER_EXCEPTION);

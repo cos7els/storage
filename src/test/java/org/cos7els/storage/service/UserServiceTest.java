@@ -125,7 +125,7 @@ public class UserServiceTest {
 
     @Test
     public void deleteUserTest() {
-        when(userRepository.deleteUserById(id)).thenReturn(id.intValue());
+        when(userRepository.deleteUserById(id)).thenReturn(1);
         userService.deleteUser(id);
         verify(userRepository).deleteUserById(id);
     }

@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/storage
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: ${spring.datasource.driver-class-name}
+    change-log: db/changelog/db.changelog-master.xml
+  servlet:
+    multipart:
+      enabled: on
+      max-file-size: 10MB
+      max-request-size: 50MB
+logging:
+  file:
+    path: logs
+minio:
+  endpoint: http://localhost:9000
+  key:
+    access: minioadmin
+    secret: minioadmin
+  bucket:
+    photo: photos
+    thumbnail: thumbnails

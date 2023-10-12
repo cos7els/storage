@@ -21,7 +21,6 @@ import org.cos7els.storage.model.domain.Photo;
 import org.cos7els.storage.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,12 +42,11 @@ import static org.cos7els.storage.util.ExceptionMessage.PUT_OBJECT_EXCEPTION;
 import static org.cos7els.storage.util.ExceptionMessage.REMOVE_OBJECT_EXCEPTION;
 
 @Service
-@PropertySource("classpath:storage.properties")
 public class StorageServiceImpl implements StorageService {
     private final MinioClient minioClient;
-    @Value("${storage_photo_bucket}")
+    @Value("${minio.bucket.photo}")
     private String photosBucket;
-    @Value("${storage_thumbnail_bucket}")
+    @Value("${minio.bucket.thumbnail}")
     private String thumbnailsBucket;
 
     @Autowired

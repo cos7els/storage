@@ -71,7 +71,8 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     private Album selectAlbum(Long albumId, Long userId) {
-        return albumRepository.findAlbumByIdAndUserId(albumId, userId).orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
+        return albumRepository.findAlbumByIdAndUserId(albumId, userId)
+                .orElseThrow(() -> new NotFoundException(ALBUM_NOT_FOUND));
     }
 
     private Album insertAlbum(Album album) {
