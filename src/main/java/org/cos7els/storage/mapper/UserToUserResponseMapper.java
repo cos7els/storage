@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 public class UserToUserResponseMapper {
 
     public UserResponse userToResponse(User user) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setUsername(user.getUsername());
-        userResponse.setEmail(user.getEmail());
-        userResponse.setUsedSpace(user.getUsedSpace());
-        return userResponse;
+        return UserResponse.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .usedSpace(user.getUsedSpace())
+                .build();
     }
 }

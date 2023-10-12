@@ -10,6 +10,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: storage
+    volumes:
+      - postgres:/var/lib/postgresql/data
     image: postgres
     restart: always
     networks:
@@ -22,7 +24,7 @@ services:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - storage:/data
+      - minio:/data
     image: minio/minio:latest
     command: server --console-address ":9001" /data
     networks:
@@ -49,4 +51,5 @@ networks:
     driver: bridge
 
 volumes:
-  storage: { }
+  minio: { }
+  postgres: { }
