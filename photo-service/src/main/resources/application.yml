@@ -1,0 +1,39 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: photo-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/photodb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: ${spring.datasource.driver-class-name}
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+minio:
+  endpoint: http://localhost:9000
+  key:
+    access: minioadmin
+    secret: minioadmin
+  bucket:
+    photo: photos
+    thumbnail: thumbnails
+
+logging:
+  file:
+    path: logs
